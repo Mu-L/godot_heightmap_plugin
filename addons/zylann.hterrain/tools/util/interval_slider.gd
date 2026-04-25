@@ -38,7 +38,7 @@ func _get_property_list():
 	]
 
 
-func _get(key: StringName):
+func _get(key: StringName) -> Variant:
 	match key:
 		&"min_value":
 			return _min_value
@@ -46,19 +46,24 @@ func _get(key: StringName):
 			return _max_value
 		&"range":
 			return Vector2(_min_value, _max_value)
+	return null
 
 
-func _set(key: StringName, value):
+func _set(key: StringName, value: Variant) -> bool:
 	match key:
 		&"min_value":
 			_min_value = min(value, _max_value)
 			queue_redraw()
+			return true
 		&"max_value":
 			_max_value = max(value, _min_value)
 			queue_redraw()
+			return true
 		&"range":
 			_min_value = value.x
 			_max_value = value.y
+			return true
+	return false
 
 
 func set_values(low: float, high: float):

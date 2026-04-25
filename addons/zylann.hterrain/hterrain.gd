@@ -413,7 +413,7 @@ func _get_property_list():
 	return props
 
 
-func _get(key: StringName):
+func _get(key: StringName) -> Variant:
 	if key == &"data_directory":
 		return _get_data_directory()
 
@@ -462,18 +462,23 @@ func _get(key: StringName):
 	elif key == &"cast_shadow":
 		return _cast_shadow_setting
 	
+	return null
 
-func _set(key: StringName, value):
+
+func _set(key: StringName, value) -> bool:
 	if key == &"data_directory":
 		_set_data_directory(value)
+		return true
 
 	# Can't use setget when the exported type is custom,
 	# because we were also are forced to use _get_property_list...
 	elif key == &"_terrain_data":
 		set_data(value)
+		return true
 
 	elif key == &"texture_set":
 		set_texture_set(value)
+		return true
 
 	# Legacy, left for migration from 1.4
 	var key_str := String(key)
@@ -488,44 +493,58 @@ func _set(key: StringName, value):
 					_texture_set_migration_textures.append([null, null])
 				var texs = _texture_set_migration_textures[i]
 				texs[ground_texture_type] = value
+		return true
 
 	elif key == &"shader_type":
 		set_shader_type(value)
+		return true
 
 	elif key == &"custom_shader":
 		set_custom_shader(value)
+		return true
 	
 	elif key == &"custom_globalmap_shader":
 		_custom_globalmap_shader = value
+		return true
 
 	elif key.begins_with("shader_params/"):
 		var param_name := String(key).substr(len("shader_params/"))
 		set_shader_param(param_name, value)
+		return true
 
 	elif key == &"chunk_size":
 		set_chunk_size(value)
+		return true
 		
 	elif key == &"collision_enabled":
 		set_collision_enabled(value)
+		return true
 
 	elif key == &"collision_layer":
 		_collision_layer = value
 		if _collider != null:
 			_collider.set_collision_layer(value)
+		return true
 
 	elif key == &"collision_mask":
 		_collision_mask = value
 		if _collider != null:
 			_collider.set_collision_mask(value)
+		return true
 
 	elif key == &"physics_material":
 		set_physics_material(value)
+		return true
 
 	elif key == &"render_layers":
 		set_render_layer_mask(value)
+		return true
 
 	elif key == &"cast_shadow":
 		set_cast_shadow(value)
+		return true
+	
+	return false
 
 
 func get_texture_set() -> HTerrainTextureSet:

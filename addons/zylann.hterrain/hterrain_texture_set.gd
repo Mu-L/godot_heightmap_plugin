@@ -87,19 +87,23 @@ func _get_property_list() -> Array:
 	]
 
 
-func _get(key: StringName):
+func _get(key: StringName) -> Variant:
 	if key == &"mode":
 		return _mode
 	if key == &"textures":
 		return _textures
+	return null
 
 
-func _set(key: StringName, value):
+func _set(key: StringName, value) -> bool:
 	if key == &"mode":
 		# Not using set_mode() here because otherwise it could reset stuff set before...
 		_mode = value
+		return true
 	if key == &"textures":
 		_textures = value
+		return true
+	return false
 
 
 func get_slots_count() -> int:

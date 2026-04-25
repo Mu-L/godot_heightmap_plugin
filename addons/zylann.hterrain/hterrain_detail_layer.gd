@@ -301,18 +301,21 @@ func _get_property_list() -> Array:
 	return props
 
 
-func _get(key: StringName):
+func _get(key: StringName) -> Variant:
 	var key_str := String(key)
 	if key_str.begins_with("shader_params/"):
 		var param_name = key_str.substr(len("shader_params/"))
 		return get_shader_param(param_name)
+	return null
 
 
-func _set(key: StringName, v):
+func _set(key: StringName, v) -> bool:
 	var key_str := String(key)
 	if key_str.begins_with("shader_params/"):
 		var param_name = key_str.substr(len("shader_params/"))
 		set_shader_param(param_name, v)
+		return true
+	return false
 
 
 func get_shader_param(param_name: String):
