@@ -38,12 +38,13 @@ func set_texture(texture: Texture, texture_layer: int) -> void:
 
 
 func _gui_input(event: InputEvent) -> void:
-	if event is InputEventMouseButton:
-		if event.pressed:
-			if event.button_index == MOUSE_BUTTON_LEFT:
+	var mb := event as InputEventMouseButton
+	if mb != null:
+		if mb.pressed:
+			if mb.button_index == MOUSE_BUTTON_LEFT:
 				grab_focus()
 				set_selected(true, true)
-				if event.double_click:
+				if mb.double_click:
 					# Don't do this at home.
 					# I do it here because this script is very related to its container anyways.
 					get_parent().get_parent()._on_item_activated(self)

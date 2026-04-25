@@ -61,11 +61,12 @@ static func _get_xz(v: Vector3) -> Vector2:
 
 
 func _gui_input(event: InputEvent) -> void:
-	if event is InputEventMouseButton:
-		if event.pressed:
-			match event.button_index:
+	var mb := event as InputEventMouseButton
+	if mb != null:
+		if mb.pressed:
+			match mb.button_index:
 				MOUSE_BUTTON_RIGHT:
-					_popup_menu.position = get_screen_position() + event.position
+					_popup_menu.position = get_screen_position() + mb.position
 					_popup_menu.popup()
 				MOUSE_BUTTON_LEFT:
 					# Teleport there?

@@ -108,7 +108,7 @@ func set_position(p_local_pos: Vector3) -> void:
 
 # This is called very often so it should be cheap
 func update_visibility() -> void:
-	var heightmap = _get_heightmap(_terrain)
+	var heightmap := _get_heightmap()
 	if heightmap == null:
 		# I do this for refcounting because heightmaps are large resources
 		_material.set_shader_parameter("u_terrain_heightmap", null)
@@ -120,11 +120,11 @@ func update_visibility() -> void:
 #		_debug_mesh_instance.set_visible(true)
 
 
-func _get_heightmap(terrain):
+func _get_heightmap() -> Texture2D:
+	var terrain := _terrain
 	if terrain == null:
 		return null
 	var data = terrain.get_data()
 	if data == null:
 		return null
 	return data.get_texture(HTerrainData.CHANNEL_HEIGHT)
-

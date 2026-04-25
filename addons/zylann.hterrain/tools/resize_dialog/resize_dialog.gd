@@ -123,10 +123,10 @@ func _on_AnchorButton_pressed(anchor0: int, x0: int, y0: int) -> void:
 		button.icon = null
 	
 	for anchor in ANCHOR_COUNT:
-		var d = _anchor_dirs[anchor]
-		var nx = x0 + d[0]
-		var ny = y0 + d[1]
-		var k = Vector2(nx, ny)
+		var d: Array = _anchor_dirs[anchor]
+		var nx: int = x0 + d[0]
+		var ny: int = y0 + d[1]
+		var k := Vector2(nx, ny)
 		if not _anchor_buttons_grid.has(k):
 			continue
 		var button : Button = _anchor_buttons_grid[k]

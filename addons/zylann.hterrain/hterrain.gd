@@ -260,7 +260,7 @@ func _init() -> void:
 			_collider = HTerrainCollider.new(self, _collision_layer, _collision_mask)
 
 
-func _get_property_list():
+func _get_property_list() -> Array:
 	# A lot of properties had to be exported like this instead of using `export`,
 	# because Godot 3 does not support easy categorization and lacks some hints
 	var props = [
@@ -572,7 +572,7 @@ func _on_texture_set_changed() -> void:
 	HT_Util.update_configuration_warning(self, false)
 
 
-func get_shader_param(param_name: String):
+func get_shader_param(param_name: String) -> Variant:
 	return HT_Util.get_shader_material_parameter(_material, param_name)
 
 
@@ -741,7 +741,7 @@ func get_internal_transform() -> Transform3D:
 	return it
 
 
-func get_internal_transform_unscaled():
+func get_internal_transform_unscaled() -> Transform3D:
 	var gt := global_transform
 	if centered and _data != null:
 		var half_size := 0.5 * (_data.get_resolution() - 1.0)
@@ -1459,7 +1459,7 @@ func set_area_dirty(
 
 
 # Called when a chunk is needed to be seen
-func _cb_make_chunk(cpos_x: int, cpos_y: int, lod: int):
+func _cb_make_chunk(cpos_x: int, cpos_y: int, lod: int) -> HTerrainChunk:
 	# TODO What if cpos is invalid? _get_chunk_at will return NULL but that's still invalid
 	var chunk := _get_chunk_at(cpos_x, cpos_y, lod)
 
@@ -1526,7 +1526,7 @@ func _cb_get_vertical_bounds(cpos_x: int, cpos_y: int, lod: int):
 # This is mostly useful in the editor, where the collider can't be updated in realtime.
 # Returns cell hit position as Vector2, or null if there was no hit.
 # TODO Cannot type hint nullable return value
-func cell_raycast(origin_world: Vector3, dir_world: Vector3, max_distance: float):
+func cell_raycast(origin_world: Vector3, dir_world: Vector3, max_distance: float): # -> ?Vector2
 	assert(typeof(origin_world) == TYPE_VECTOR3)
 	assert(typeof(dir_world) == TYPE_VECTOR3)
 	if not has_data():

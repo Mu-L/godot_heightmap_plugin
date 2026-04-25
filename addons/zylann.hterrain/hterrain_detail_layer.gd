@@ -318,7 +318,7 @@ func _set(key: StringName, v) -> bool:
 	return false
 
 
-func get_shader_param(param_name: String):
+func get_shader_param(param_name: String) -> Variant:
 	return HT_Util.get_shader_material_parameter(_material, param_name)
 
 

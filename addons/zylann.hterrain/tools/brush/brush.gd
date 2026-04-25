@@ -20,7 +20,7 @@ const MAX_OPACITY_FOR_SLIDERS = 100
 const MAX_SIZE = 4000
 
 signal size_changed(new_size)
-signal opacity_changed(new_opacity)
+signal opacity_changed(new_opacity: float)
 signal shapes_changed
 signal shape_index_changed
 

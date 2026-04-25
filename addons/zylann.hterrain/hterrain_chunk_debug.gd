@@ -61,6 +61,6 @@ func set_aabb(aabb: AABB) -> void:
 	_debug_cube.set_transform(_compute_aabb())
 
 
-func _compute_aabb():
+func _compute_aabb() -> Transform3D:
 	var pos = Vector3(cell_origin_x, 0, cell_origin_y)
 	return _parent_transform * Transform3D(Basis().scaled(_aabb.size), pos + _aabb.position)

@@ -353,7 +353,7 @@ func _handles(object: Object) -> bool:
 func _edit(object: Object) -> void:
 	_logger.debug(str("Edit ", object))
 	
-	var node = _get_terrain_from_object(object)
+	var node := _get_terrain_from_object(object)
 	
 	if _node != null:
 		_node.tree_exited.disconnect(_terrain_exited_scene)
@@ -383,7 +383,7 @@ func _edit(object: Object) -> void:
 	_update_toolbar_menu_availability()
 
 
-static func _get_terrain_from_object(object):
+static func _get_terrain_from_object(object: Object) -> HTerrain:
 	if object != null and object is Node3D:
 		if not object.is_inside_tree():
 			return null
@@ -463,10 +463,11 @@ func _forward_3d_gui_input(p_camera: Camera3D, p_event: InputEvent) -> int:
 	_node._edit_update_viewer_position(p_camera)
 	_panel.set_camera_transform(p_camera.global_transform)
 
-	var captured_event = false
+	var captured_event := false
 	
-	if p_event is InputEventKey:
-		if p_event.keycode == KEY_G and p_event.is_echo() == false and p_event.pressed:
+	var key_event := p_event as InputEventKey
+	if key_event != null:
+		if key_event.keycode == KEY_G and key_event.is_echo() == false and key_event.pressed:
 			captured_event = true
 			_show_brush_editor_overlay(
 				HT_Brush.MIN_SIZE_FOR_SLIDERS,
@@ -476,7 +477,7 @@ func _forward_3d_gui_input(p_camera: Camera3D, p_event: InputEvent) -> int:
 			func on_value_changed(value):
 				_terrain_painter.set_brush_size(value)\
 			 )
-		elif p_event.keycode == KEY_H and p_event.is_echo() == false and p_event.pressed:
+		elif key_event.keycode == KEY_H and key_event.is_echo() == false and key_event.pressed:
 			captured_event = true
 			_show_brush_editor_overlay(
 				HT_Brush.MIN_OPACITY_FOR_SLIDERS,
@@ -487,8 +488,9 @@ func _forward_3d_gui_input(p_camera: Camera3D, p_event: InputEvent) -> int:
 				_terrain_painter.set_opacity(value/100.0)\
 			 )
 
-	if p_event is InputEventMouseButton:
-		var mb = p_event
+	var mouse_button_event := p_event as InputEventMouseButton
+	if mouse_button_event != null:
+		var mb := mouse_button_event
 		
 		if mb.button_index == MOUSE_BUTTON_LEFT or mb.button_index == MOUSE_BUTTON_RIGHT:
 			if mb.pressed == false:
@@ -525,8 +527,9 @@ func _forward_3d_gui_input(p_camera: Camera3D, p_event: InputEvent) -> int:
 					_logger.debug("Picking height {0}".format([h]))
 					_terrain_painter.set_flatten_height(h)
 
-	elif p_event is InputEventMouseMotion:
-		var mm = p_event
+	var mouse_motion_event := p_event as InputEventMouseMotion
+	if mouse_motion_event != null:
+		var mm := mouse_motion_event
 		var hit_pos_in_cells = _get_pointed_cell_position(mm.position, p_camera)
 		if hit_pos_in_cells != null:
 			_brush_decal.set_position(Vector3(hit_pos_in_cells.x, 0, hit_pos_in_cells.y))
@@ -549,7 +552,7 @@ func _process(delta: float) -> void:
 	if _node == null:
 		return
 
-	var has_data = (_node.get_data() != null)
+	var has_data := (_node.get_data() != null)
 	
 	if _pending_paint_commit:
 		if has_data:
@@ -569,9 +572,9 @@ func _process(delta: float) -> void:
 
 
 func _paint_completed(changes: Dictionary) -> void:
-	var time_before = Time.get_ticks_msec()
+	var time_before := Time.get_ticks_msec()
 
-	var heightmap_data = _node.get_data()
+	var heightmap_data := _node.get_data()
 	assert(heightmap_data != null)
 	
 	var chunk_positions : Array = changes.chunk_positions
@@ -772,7 +775,7 @@ func _select_brush_mode(mode: int) -> void:
 	_on_mode_selected(mode)
 
 
-static func get_size_from_raw_length(flen: int):
+static func get_size_from_raw_length(flen: int) -> int:
 	var side_len = roundf(sqrt(float(flen/2)))
 	return int(side_len)
 

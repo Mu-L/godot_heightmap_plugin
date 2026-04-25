@@ -13,7 +13,7 @@ const DUMMY_TEXTURE_PATH = "res://addons/zylann.hterrain/tools/icons/empty.png"
 
 signal progress_reported(info)
 # Emitted when an output is generated.
-signal output_generated(image, metadata)
+signal output_generated(image: Image, metadata)
 # Emitted when all passes are complete
 signal completed
 
@@ -21,7 +21,7 @@ class HT_TextureGeneratorViewport:
 	var viewport : SubViewport
 	var ci : TextureRect
 
-var _passes := []
+var _passes := [] # Array[HT_TextureGeneratorPass]
 var _resolution := Vector2i(512, 512)
 var _output_padding := [0, 0, 0, 0]
 
@@ -91,7 +91,7 @@ func add_pass(p: HT_TextureGeneratorPass) -> void:
 
 func add_output(meta: Variant) -> void:
 	assert(len(_passes) > 0)
-	var p = _passes[-1]
+	var p : HT_TextureGeneratorPass = _passes[-1]
 	p.output = true
 	p.metadata = meta
 

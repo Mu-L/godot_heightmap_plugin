@@ -5,12 +5,12 @@ const HT_DetailEditor = preload("./detail_editor/detail_editor.gd")
 
 
 # Emitted when a texture item is selected
-signal texture_selected(index)
-signal edit_texture_pressed(index)
+signal texture_selected(index: int)
+signal edit_texture_pressed(index: int)
 signal import_textures_pressed
 
 # Emitted when a detail item is selected (grass painting)
-signal detail_selected(index)
+signal detail_selected(index: int)
 signal detail_list_changed
 
 

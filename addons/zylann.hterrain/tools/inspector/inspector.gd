@@ -9,7 +9,7 @@ extends Control
 const USAGE_FILE = "file"
 const USAGE_ENUM = "enum"
 
-signal property_changed(key, value)
+signal property_changed(key: String, value: Variant)
 
 # Used for most simple types
 class HT_InspectorEditor:
@@ -21,13 +21,13 @@ class HT_InspectorEditor:
 
 # Used when the control cannot hold the actual value
 class HT_InspectorResourceEditor extends HT_InspectorEditor:
-	var value = null
-	var label = null
+	var value: Resource = null
+	var label: Label = null
 	
-	func get_value():
+	func get_value() -> Resource:
 		return value
 	
-	func set_value(v):
+	func set_value(v: Resource) -> void:
 		value = v
 		label.text = "null" if v == null else v.resource_path
 
@@ -36,13 +36,13 @@ class HT_InspectorVectorEditor extends HT_InspectorEditor:
 	signal value_changed(v)
 	
 	var value := Vector2()
-	var xed = null
-	var yed = null
+	var xed: SpinBox = null
+	var yed: SpinBox = null
 	
-	func get_value():
+	func get_value() -> Vector2:
 		return value
 	
-	func set_value(v):
+	func set_value(v: Vector2) -> void:
 		xed.value = v.x
 		yed.value = v.y
 		value = v
@@ -59,7 +59,7 @@ var _edit_signal := true
 var _editors := {}
 
 # Had to separate the container because otherwise I can't open dialogs properly...
-@onready var _grid_container = get_node("GridContainer")
+@onready var _grid_container: GridContainer = get_node("GridContainer")
 @onready var _file_dialog = get_node("OpenFileDialog")
 
 
@@ -103,12 +103,12 @@ func clear_prototype() -> void:
 	_prototype = null
 
 
-func get_value(key: String):
+func get_value(key: String) -> Variant:
 	var editor = _editors[key]
 	return editor.getter.call()
 
 
-func get_values():
+func get_values() -> Dictionary:
 	var values = {}
 	for key in _editors:
 		var editor = _editors[key]
@@ -266,9 +266,9 @@ func _make_editor(key: String, prop: Dictionary) -> HT_InspectorEditor:
 				line_edit.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 				editor.add_child(line_edit)
 				
-				var exts = []
+				var exts := PackedStringArray()
 				if prop.has("exts"):
-					exts = prop.exts
+					exts = PackedStringArray(prop.exts)
 				
 				var load_button := Button.new()
 				load_button.text = "..."
@@ -460,13 +460,13 @@ func _on_texture_selected(path: String, key: String) -> void:
 	var tex = load(path)
 	if tex == null:
 		return
-	var ed = _editors[key]
+	var ed: HT_InspectorEditor = _editors[key]
 	ed.setter.call(tex)
 	_property_edited(tex, key)
 
 
 func _on_ask_clear_texture(key: String) -> void:
-	var ed = _editors[key]
+	var ed: HT_InspectorEditor = _editors[key]
 	ed.setter.call(null)
 	_property_edited(null, key)
 
@@ -479,6 +479,6 @@ func _on_ask_load_file(key: String, exts: PackedStringArray) -> void:
 
 
 func _on_file_selected(path: String, key: String) -> void:
-	var ed = _editors[key]
+	var ed: HT_InspectorEditor = _editors[key]
 	ed.setter.call(path)
 	_property_edited(path, key)

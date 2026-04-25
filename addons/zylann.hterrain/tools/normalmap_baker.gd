@@ -114,8 +114,8 @@ func _process(_unused_delta: float) -> void:
 		return
 	
 	if _processing_tile != null and _terrain_data != null:
-		var src = _viewport.get_texture().get_image()
-		var dst = _terrain_data.get_image(HTerrainData.CHANNEL_NORMAL)
+		var src : Image = _viewport.get_texture().get_image()
+		var dst : Image = _terrain_data.get_image(HTerrainData.CHANNEL_NORMAL)
 		
 		src.convert(dst.get_format())
 		#src.save_png(str("test_", _processing_tile.x, "_", _processing_tile.y, ".png"))
@@ -130,7 +130,7 @@ func _process(_unused_delta: float) -> void:
 		_processing_tile = null
 
 	if _has_pending_tiles():
-		var tpos = _pending_tiles_queue[-1]
+		var tpos : Vector2 = _pending_tiles_queue[-1]
 		_pending_tiles_queue.pop_back()
 		# The sprite will be much larger than the viewport due to the size of the heightmap.
 		# We move it around so the part inside the viewport will correspond to the tile.

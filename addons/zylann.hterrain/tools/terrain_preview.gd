@@ -113,20 +113,23 @@ func _gui_input(event: InputEvent) -> void:
 	if HT_Util.is_in_edited_scene(self):
 		return
 	
-	if event is InputEventMouseMotion:
-		if event.button_mask & MOUSE_BUTTON_MASK_MIDDLE:
-			var d : Vector2 = 0.01 * event.relative
+	var mm := event as InputEventMouseMotion
+	if mm != null:
+		if (mm.button_mask & MOUSE_BUTTON_MASK_MIDDLE) != 0:
+			var d : Vector2 = 0.01 * mm.relative
 			_yaw -= d.x
 			_pitch -= d.y
 			_update_camera()
 		else:
-			var rel : Vector2 = 0.01 * event.relative
+			var rel : Vector2 = 0.01 * mm.relative
 			# Align dragging to view rotation
 			rel = -rel.rotated(-_yaw)
-			dragged.emit(rel, event.button_mask)
+			dragged.emit(rel, mm.button_mask)
+		return
 	
-	elif event is InputEventMouseButton:
-		if event.pressed:
+	var mb := event as InputEventMouseButton
+	if mb != null:
+		if mb.pressed:
 			
 			var factor := 1.2
 			var max_factor := 10.0
@@ -134,10 +137,10 @@ func _gui_input(event: InputEvent) -> void:
 			var max_distance := _default_distance
 			
 			# Zoom in/out
-			if event.button_index == MOUSE_BUTTON_WHEEL_DOWN:
+			if mb.button_index == MOUSE_BUTTON_WHEEL_DOWN:
 				_distance = clampf(_distance * factor, min_distance, max_distance)
 				_update_camera()
 
-			elif event.button_index == MOUSE_BUTTON_WHEEL_UP:
+			elif mb.button_index == MOUSE_BUTTON_WHEEL_UP:
 				_distance = clampf(_distance / factor, min_distance, max_distance)
 				_update_camera()

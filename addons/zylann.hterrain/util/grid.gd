@@ -15,7 +15,7 @@ static func up_div(a: int, b: int) -> int:
 # Creates a 2D array as an array of arrays.
 # if v is provided, all cells will contain the same value.
 # if v is a funcref, it will be executed to fill the grid cell per cell.
-static func create_grid(w: int, h: int, v=null):
+static func create_grid(w: int, h: int, v=null) -> Array:
 	var is_create_func = typeof(v) == TYPE_CALLABLE
 	var grid := []
 	grid.resize(h)
@@ -33,7 +33,7 @@ static func create_grid(w: int, h: int, v=null):
 
 
 # Creates a 2D array that is a copy of another 2D array
-static func clone_grid(other_grid):
+static func clone_grid(other_grid: Array) -> Array:
 	var grid := []
 	grid.resize(other_grid.size())
 	for y in range(0, grid.size()):
@@ -121,8 +121,9 @@ static func resize_grid(
 		assert(len(grid[y]) == new_width)
 
 
-# Retrieves the minimum and maximum values from a grid
-static func grid_min_max(grid):
+# Retrieves the minimum and maximum values from a grid.
+# Only works if elements are numbers.
+static func grid_min_max(grid: Array) -> Array:
 	if grid.size() == 0 or grid[0].size() == 0:
 		return [0,0]
 	var vmin = grid[0][0]
@@ -139,8 +140,8 @@ static func grid_min_max(grid):
 
 
 # Copies a sub-region of a grid as a new grid. No boundary check!
-static func grid_extract_area(src_grid, x0, y0, w, h):
-	var dst = create_grid(w, h)
+static func grid_extract_area(src_grid, x0: int, y0: int, w: int, h: int) -> Array:
+	var dst := create_grid(w, h)
 	for y in h:
 		var dst_row = dst[y]
 		var src_row = src_grid[y0+y]
@@ -150,12 +151,12 @@ static func grid_extract_area(src_grid, x0, y0, w, h):
 
 
 # Extracts data and crops the result if the requested rect crosses the bounds
-static func grid_extract_area_safe_crop(src_grid, x0, y0, w, h):
+static func grid_extract_area_safe_crop(src_grid: Array, x0: int, y0: int, w: int, h: int) -> Array:
 	# Return empty is completely out of bounds
-	var gw = src_grid.size()
+	var gw := src_grid.size()
 	if gw == 0:
 		return []
-	var gh = src_grid[0].size()
+	var gh : int = src_grid[0].size()
 	if x0 >= gw or y0 >= gh:
 		return []
 	
@@ -190,8 +191,8 @@ static func grid_equals(a: Array, b: Array) -> bool:
 	if a.size() != b.size():
 		return false
 	for y in a.size():
-		var a_row = a[y]
-		var b_row = b[y]
+		var a_row: Array = a[y]
+		var b_row: Array = b[y]
 		if a_row.size() != b_row.size():
 			return false
 		for x in b_row.size():
@@ -200,7 +201,7 @@ static func grid_equals(a: Array, b: Array) -> bool:
 	return true
 
 
-static func grid_get_or_default(grid, x, y, defval=null):
+static func grid_get_or_default(grid: Array, x: int, y: int, defval=null) -> Variant:
 	if y >= 0 and y < len(grid):
 		var row = grid[y]
 		if x >= 0 and x < len(row):

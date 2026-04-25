@@ -14,7 +14,7 @@ signal changed
 
 var _min_value := 0.0
 var _max_value := 1.0
-var _values = [0.2, 0.6]
+var _values := [0.2, 0.6]
 var _grabbing := false
 
 
@@ -146,18 +146,22 @@ func _set_from_pixel(px: float) -> void:
 
 
 func _gui_input(event: InputEvent) -> void:
-	if event is InputEventMouseButton:
-		if event.pressed:
-			if event.button_index == MOUSE_BUTTON_LEFT:
+	var mb := event as InputEventMouseButton
+	if mb != null:
+		if mb.pressed:
+			if mb.button_index == MOUSE_BUTTON_LEFT:
 				_grabbing = true
-				_set_from_pixel(event.position.x)
+				_set_from_pixel(mb.position.x)
 		else:
-			if event.button_index == MOUSE_BUTTON_LEFT:
+			if mb.button_index == MOUSE_BUTTON_LEFT:
 				_grabbing = false
-				
-	elif event is InputEventMouseMotion:
+		return
+	
+	var mm := event as InputEventMouseMotion
+	if mm != null:
 		if _grabbing:
-			_set_from_pixel(event.position.x)			
+			_set_from_pixel(mm.position.x)
+		return
 
 
 func _draw() -> void:

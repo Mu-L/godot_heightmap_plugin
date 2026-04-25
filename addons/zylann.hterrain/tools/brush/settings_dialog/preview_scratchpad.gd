@@ -48,22 +48,26 @@ func get_painter() -> HT_PreviewPainter:
 
 
 func _gui_input(event: InputEvent) -> void:
-	if event is InputEventMouseMotion:
+	var mm := event as InputEventMouseMotion
+	if mm != null:
 		if Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT):
-			_painter.paint_input(event.position, event.pressure)
+			_painter.paint_input(mm.position, mm.pressure)
 		queue_redraw()
+		return
 	
-	elif event is InputEventMouseButton:
-		if event.button_index == MOUSE_BUTTON_LEFT:
-			if event.pressed:
+	var mb := event as InputEventMouseButton
+	if mb != null:
+		if mb.button_index == MOUSE_BUTTON_LEFT:
+			if mb.pressed:
 				# TODO `pressure` is not available on button events
 				# So I have to assume zero... which means clicks do not paint anything?
-				_painter.paint_input(event.position, 0.0)
+				_painter.paint_input(mb.position, 0.0)
 			else:
 				_painter.get_brush().on_paint_end()
+		return
 
 
 func _draw() -> void:
-	var mpos = get_local_mouse_position()
+	var mpos := get_local_mouse_position()
 	var brush = _painter.get_brush()
 	draw_arc(mpos, 0.5 * brush.get_size(), -PI, PI, 32, Color(1, 0.2, 0.2), 2.0, true)

@@ -341,7 +341,7 @@ func resize(p_res: int, stretch := true, anchor := Vector2(-1, -1)) -> void:
 
 
 # TODO Can't hint it, the return is a nullable Color
-static func _get_map_default_fill_color(map_type: int, map_index: int):
+static func _get_map_default_fill_color(map_type: int, map_index: int): # -> ?Color
 	var config = _map_types[map_type].default_fill
 	if config == null:
 		# No fill required
@@ -832,7 +832,7 @@ func get_image(map_type: int, index := 0) -> Image:
 	return map.image
 
 
-func get_texture(map_type: int, index := 0, writable := false) -> Texture:
+func get_texture(map_type: int, index := 0, writable := false) -> Texture2D:
 	# TODO Split into `get_texture` and `get_writable_texture`?
 	
 	var maps: Array = _maps[map_type]
@@ -1895,7 +1895,7 @@ class HT_CellRaycastContext:
 # The coordinate system is such that Y is up, terrain minimum corner is at (0, 0),
 # and one heightmap pixel is one space unit.
 # TODO Cannot hint as `-> Vector2` because it can be null if there is no hit
-func cell_raycast(ray_origin: Vector3, ray_direction: Vector3, max_distance: float):
+func cell_raycast(ray_origin: Vector3, ray_direction: Vector3, max_distance: float): # -> ?Vector2
 	var heightmap := get_image(CHANNEL_HEIGHT)
 	if heightmap == null:
 		return null

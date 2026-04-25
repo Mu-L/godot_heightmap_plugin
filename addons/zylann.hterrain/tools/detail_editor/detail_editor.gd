@@ -13,7 +13,7 @@ const PLACEHOLDER_ICON_TEXTURE = "res://addons/zylann.hterrain/tools/icons/icon_
 const DETAIL_LAYER_ICON_TEXTURE = \
 	"res://addons/zylann.hterrain/tools/icons/icon_detail_layer_node.svg"
 
-signal detail_selected(index)
+signal detail_selected(index: int)
 # Emitted when the tool added or removed a detail map
 signal detail_list_changed
 

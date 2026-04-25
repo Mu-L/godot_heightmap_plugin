@@ -88,7 +88,7 @@ func _notification(what: int) -> void:
 			_clear_feedback()
 
 
-static func _format_feedbacks(feed):
+static func _format_feedbacks(feed) -> String:
 	var a := []
 	for s in feed:
 		a.append("- " + s)

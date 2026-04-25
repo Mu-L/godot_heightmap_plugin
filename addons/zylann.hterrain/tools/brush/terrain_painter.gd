@@ -554,7 +554,7 @@ func _paint_mask(data: HTerrainData, position: Vector2, shift_pressed: bool) -> 
 func _paint_detail(data: HTerrainData, position: Vector2, shift_pressed: bool) -> void:
 	var image := data.get_image(HTerrainData.CHANNEL_DETAIL, _detail_index)
 	var texture := data.get_texture(HTerrainData.CHANNEL_DETAIL, _detail_index, true)
-	var heightmap_texture = data.get_texture(HTerrainData.CHANNEL_HEIGHT, 0)
+	var heightmap_texture := data.get_texture(HTerrainData.CHANNEL_HEIGHT, 0)
 
 	var mm := HT_ModifiedMap.new()
 	mm.map_type = HTerrainData.CHANNEL_DETAIL

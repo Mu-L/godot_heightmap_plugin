@@ -16,6 +16,6 @@ func _init() -> void:
 func _on_close() -> void:
 	# Disconnect listeners automatically,
 	# so we can re-use the same dialog with different listeners
-	var cons = get_signal_connection_list("file_selected")
+	var cons := get_signal_connection_list("file_selected")
 	for con in cons:
 		file_selected.disconnect(con.callable)

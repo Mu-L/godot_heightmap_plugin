@@ -181,7 +181,7 @@ func set_value(v: float, notify_change: bool, use_slider_maximum: bool = false) 
 			value_changed.emit(get_value())
 
 
-func get_value():
+func get_value() -> Variant: # int|float
 	if _rounded:
 		return int(roundf(_value))
 	return _value
@@ -269,9 +269,10 @@ func _value_to_ratio(v: float) -> float:
 
 
 func _on_LineEdit_gui_input(event: InputEvent) -> void:
-	if event is InputEventKey:
-		if event.pressed:
-			if event.keycode == KEY_ESCAPE:
+	var key_event := event as InputEventKey
+	if key_event != null:
+		if key_event.pressed:
+			if key_event.keycode == KEY_ESCAPE:
 				_ignore_line_edit = true
 				_hide_line_edit()
 				grab_focus()
@@ -314,25 +315,29 @@ func _show_line_edit() -> void:
 
 
 func _gui_input(event: InputEvent) -> void:
-	if event is InputEventMouseButton:
-		if event.pressed:
-			if event.button_index == MOUSE_BUTTON_LEFT:
-				_press_pos = event.position
+	var mb := event as InputEventMouseButton
+	if mb != null:
+		if mb.pressed:
+			if mb.button_index == MOUSE_BUTTON_LEFT:
+				_press_pos = mb.position
 				_pressing = true
 		else:
-			if event.button_index == MOUSE_BUTTON_LEFT:
+			if mb.button_index == MOUSE_BUTTON_LEFT:
 				_pressing = false
 				if _grabbing:
 					_grabbing = false
-					_set_from_pixel(event.position.x)
+					_set_from_pixel(mb.position.x)
 				else:
 					_show_line_edit()
+		return
 	
-	elif event is InputEventMouseMotion:
-		if _pressing and _press_pos.distance_to(event.position) > 2.0:
+	var mm := event as InputEventMouseMotion
+	if mm != null:
+		if _pressing and _press_pos.distance_to(mm.position) > 2.0:
 			_grabbing = true
 		if _grabbing:
-			_set_from_pixel(event.position.x)			
+			_set_from_pixel(mm.position.x)
+		return
 
 
 func _draw() -> void:
