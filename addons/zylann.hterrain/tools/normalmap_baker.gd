@@ -16,12 +16,12 @@ const STATE_PROCESSING = 1
 var _viewport : SubViewport = null
 var _ci : Sprite2D = null
 var _pending_tiles_grid := {}
-var _pending_tiles_queue := []
-var _processing_tile = null
+var _pending_tiles_queue := [] # Array[Vector2] (older Godot versions can't type array contents)
+var _processing_tile = null # ?Vector2
 var _terrain_data : HTerrainData = null
 
 
-func _init():
+func _init() -> void:
 	assert(VIEWPORT_SIZE <= HTerrainData.MIN_RESOLUTION)
 	_viewport = SubViewport.new()
 	_viewport.size = Vector2(VIEWPORT_SIZE + 2, VIEWPORT_SIZE + 2)
@@ -43,7 +43,7 @@ func _init():
 	set_process(false)
 
 
-func set_terrain_data(data: HTerrainData):
+func set_terrain_data(data: HTerrainData) -> void:
 	if data == _terrain_data:
 		return
 
@@ -65,18 +65,18 @@ func set_terrain_data(data: HTerrainData):
 		_ci.texture = data.get_texture(HTerrainData.CHANNEL_HEIGHT)
 
 
-func _on_terrain_data_map_changed(maptype: int, index: int):
+func _on_terrain_data_map_changed(maptype: int, index: int) -> void:
 	if maptype == HTerrainData.CHANNEL_HEIGHT:
 		_ci.texture = _terrain_data.get_texture(HTerrainData.CHANNEL_HEIGHT)
 
 
-func _on_terrain_data_resolution_changed():
+func _on_terrain_data_resolution_changed() -> void:
 	# TODO Workaround issue https://github.com/godotengine/godot/issues/24463
 	_ci.queue_redraw()
 
 
 # TODO Use Vector2i
-func request_tiles_in_region(min_pos: Vector2, size: Vector2):
+func request_tiles_in_region(min_pos: Vector2, size: Vector2) -> void:
 	assert(is_inside_tree())
 	assert(_terrain_data != null)
 	var res = _terrain_data.get_resolution()
@@ -98,7 +98,7 @@ func request_tiles_in_region(min_pos: Vector2, size: Vector2):
 
 
 # TODO Use Vector2i
-func request_tile(tpos: Vector2):
+func request_tile(tpos: Vector2) -> void:
 	assert(tpos == tpos.round())
 	if _pending_tiles_grid.has(tpos):
 		var state = _pending_tiles_grid[tpos]
@@ -109,7 +109,7 @@ func request_tile(tpos: Vector2):
 	set_process(true)
 
 
-func _process(delta):
+func _process(_unused_delta: float) -> void:
 	if not is_processing():
 		return
 	
@@ -142,7 +142,7 @@ func _process(delta):
 		set_process(false)
 
 
-func _has_pending_tiles():
+func _has_pending_tiles() -> bool:
 	return len(_pending_tiles_queue) > 0
 
 

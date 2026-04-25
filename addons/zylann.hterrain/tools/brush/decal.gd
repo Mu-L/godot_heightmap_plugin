@@ -17,7 +17,7 @@ var _material := ShaderMaterial.new()
 var _terrain : HTerrain = null
 
 
-func _init():
+func _init() -> void:
 	_material.shader = load("res://addons/zylann.hterrain/tools/brush/decal.gdshader")
 	_mesh_instance = HT_DirectMeshInstance.new()
 	_mesh_instance.set_material(_material)
@@ -29,7 +29,7 @@ func _init():
 #	_debug_mesh_instance.set_mesh(_debug_mesh)
 
 
-func set_size(size: float):
+func set_size(size: float) -> void:
 	_mesh.size = Vector2(size, size)
 	# Must line up to terrain vertex policy, so must apply an off-by-one.
 	# If I don't do that, the brush will appear to wobble above the ground
@@ -54,7 +54,7 @@ func set_size(size: float):
 #	set_size(shape_image.get_width())
 
 
-func _on_terrain_transform_changed(terrain_global_trans: Transform3D):
+func _on_terrain_transform_changed(terrain_global_trans: Transform3D) -> void:
 	var inv = terrain_global_trans.affine_inverse()
 	_material.set_shader_parameter("u_terrain_inverse_transform", inv)
 
@@ -62,7 +62,7 @@ func _on_terrain_transform_changed(terrain_global_trans: Transform3D):
 	_material.set_shader_parameter("u_terrain_normal_basis", normal_basis)
 
 
-func set_terrain(terrain: HTerrain):
+func set_terrain(terrain: HTerrain) -> void:
 	if _terrain == terrain:
 		return
 
@@ -82,7 +82,7 @@ func set_terrain(terrain: HTerrain):
 	update_visibility()
 
 
-func set_position(p_local_pos: Vector3):
+func set_position(p_local_pos: Vector3) -> void:
 	assert(_terrain != null)
 	assert(typeof(p_local_pos) == TYPE_VECTOR3)
 	
@@ -107,7 +107,7 @@ func set_position(p_local_pos: Vector3):
 
 
 # This is called very often so it should be cheap
-func update_visibility():
+func update_visibility() -> void:
 	var heightmap = _get_heightmap(_terrain)
 	if heightmap == null:
 		# I do this for refcounting because heightmaps are large resources

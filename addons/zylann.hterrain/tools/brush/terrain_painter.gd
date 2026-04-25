@@ -56,7 +56,7 @@ var _terrain : HTerrain
 var _logger = HT_Logger.get_for(self)
 
 
-func _init():
+func _init() -> void:
 	for i in 4:
 		var p := HT_Painter.new()
 		# The name is just for debugging
@@ -81,7 +81,7 @@ func set_brush_size(s: int):
 #		p.set_brush_size(_brush_size)
 
 
-func set_brush_texture(texture: Texture2D):
+func set_brush_texture(texture: Texture2D) -> void:
 	_brush.set_shapes([texture])
 #	for p in _painters:
 #		p.set_brush_texture(texture)
@@ -91,11 +91,11 @@ func get_opacity() -> float:
 	return _brush.get_opacity()
 
 
-func set_opacity(opacity: float):
+func set_opacity(opacity: float) -> void:
 	_brush.set_opacity(opacity)
 
 
-func set_flatten_height(h: float):
+func set_flatten_height(h: float) -> void:
 	if h == _flatten_height:
 		return
 	_flatten_height = h
@@ -106,7 +106,7 @@ func get_flatten_height() -> float:
 	return _flatten_height
 
 
-func set_color(c: Color):
+func set_color(c: Color) -> void:
 	_color = c
 
 
@@ -114,7 +114,7 @@ func get_color() -> Color:
 	return _color
 
 
-func set_mask_flag(m: bool):
+func set_mask_flag(m: bool) -> void:
 	_mask_flag = m
 
 
@@ -122,7 +122,7 @@ func get_mask_flag() -> bool:
 	return _mask_flag
 
 
-func set_detail_density(d: float):
+func set_detail_density(d: float) -> void:
 	_detail_density = clampf(d, 0.0, 1.0)
 
 
@@ -130,11 +130,11 @@ func get_detail_density() -> float:
 	return _detail_density
 
 
-func set_detail_index(di: int):
+func set_detail_index(di: int) -> void:
 	_detail_index = di
 
 
-func set_texture_index(i: int):
+func set_texture_index(i: int) -> void:
 	_texture_index = i
 
 
@@ -150,7 +150,7 @@ func get_slope_limit_high_angle() -> float:
 	return _slope_limit_high_angle
 
 
-func set_slope_limit_angles(low: float, high: float):
+func set_slope_limit_angles(low: float, high: float) -> void:
 	_slope_limit_low_angle = low
 	_slope_limit_high_angle = high
 
@@ -219,7 +219,7 @@ func commit() -> Dictionary:
 	}
 
 
-func set_mode(mode: int):
+func set_mode(mode: int) -> void:
 	assert(mode >= 0 and mode < MODE_COUNT)
 	_mode = mode
 
@@ -228,7 +228,7 @@ func get_mode() -> int:
 	return _mode
 
 
-func set_terrain(terrain: HTerrain):
+func set_terrain(terrain: HTerrain) -> void:
 	if terrain == _terrain:
 		return
 	_terrain = terrain
@@ -305,7 +305,7 @@ func paint_input(position: Vector2, pressure: float, shift_pressed: bool) -> boo
 	return true
 
 
-func _on_painter_texture_region_changed(rect: Rect2, painter_index: int):
+func _on_painter_texture_region_changed(rect: Rect2, painter_index: int) -> void:
 	var data := _terrain.get_data()
 	if data == null:
 		return
@@ -316,7 +316,7 @@ func _on_painter_texture_region_changed(rect: Rect2, painter_index: int):
 			break
 
 
-func _paint_height(data: HTerrainData, position: Vector2, factor: float):
+func _paint_height(data: HTerrainData, position: Vector2, factor: float) -> void:
 	var image := data.get_image(HTerrainData.CHANNEL_HEIGHT)
 	var texture := data.get_texture(HTerrainData.CHANNEL_HEIGHT, 0, true)
 	
@@ -338,7 +338,7 @@ func _paint_height(data: HTerrainData, position: Vector2, factor: float):
 	p.paint_input(position)
 
 
-func _paint_smooth(data: HTerrainData, position: Vector2):
+func _paint_smooth(data: HTerrainData, position: Vector2) -> void:
 	var image := data.get_image(HTerrainData.CHANNEL_HEIGHT)
 	var texture := data.get_texture(HTerrainData.CHANNEL_HEIGHT, 0, true)
 	
@@ -356,7 +356,7 @@ func _paint_smooth(data: HTerrainData, position: Vector2):
 	p.paint_input(position)
 
 
-func _paint_flatten(data: HTerrainData, position: Vector2):
+func _paint_flatten(data: HTerrainData, position: Vector2) -> void:
 	var image := data.get_image(HTerrainData.CHANNEL_HEIGHT)
 	var texture := data.get_texture(HTerrainData.CHANNEL_HEIGHT, 0, true)
 	
@@ -374,7 +374,7 @@ func _paint_flatten(data: HTerrainData, position: Vector2):
 	p.paint_input(position)
 
 
-func _paint_level(data: HTerrainData, position: Vector2):
+func _paint_level(data: HTerrainData, position: Vector2) -> void:
 	var image := data.get_image(HTerrainData.CHANNEL_HEIGHT)
 	var texture := data.get_texture(HTerrainData.CHANNEL_HEIGHT, 0, true)
 	
@@ -392,7 +392,7 @@ func _paint_level(data: HTerrainData, position: Vector2):
 	p.paint_input(position)
 
 
-func _paint_erode(data: HTerrainData, position: Vector2):
+func _paint_erode(data: HTerrainData, position: Vector2) -> void:
 	var image := data.get_image(HTerrainData.CHANNEL_HEIGHT)
 	var texture := data.get_texture(HTerrainData.CHANNEL_HEIGHT, 0, true)
 	
@@ -409,7 +409,7 @@ func _paint_erode(data: HTerrainData, position: Vector2):
 	p.paint_input(position)
 
 
-func _paint_splat4(data: HTerrainData, position: Vector2):
+func _paint_splat4(data: HTerrainData, position: Vector2) -> void:
 	var image := data.get_image(HTerrainData.CHANNEL_SPLAT)
 	var texture := data.get_texture(HTerrainData.CHANNEL_SPLAT, 0, true)
 	var heightmap_texture := data.get_texture(HTerrainData.CHANNEL_HEIGHT, 0)
@@ -430,7 +430,7 @@ func _paint_splat4(data: HTerrainData, position: Vector2):
 	p.paint_input(position)
 
 
-func _paint_splat_indexed(data: HTerrainData, position: Vector2):
+func _paint_splat_indexed(data: HTerrainData, position: Vector2) -> void:
 	var map_types := [
 		HTerrainData.CHANNEL_SPLAT_INDEX, 
 		HTerrainData.CHANNEL_SPLAT_WEIGHT
@@ -461,7 +461,7 @@ func _paint_splat_indexed(data: HTerrainData, position: Vector2):
 		p.paint_input(position)
 
 
-func _paint_splat16(data: HTerrainData, position: Vector2):
+func _paint_splat16(data: HTerrainData, position: Vector2) -> void:
 	# Make sure required maps are present
 	while data.get_map_count(HTerrainData.CHANNEL_SPLAT) < 4:
 		data._edit_add_map(HTerrainData.CHANNEL_SPLAT)
@@ -504,7 +504,7 @@ func _paint_splat16(data: HTerrainData, position: Vector2):
 		p.paint_input(position)
 
 
-func _paint_color(data: HTerrainData, position: Vector2, shift_pressed: bool):
+func _paint_color(data: HTerrainData, position: Vector2, shift_pressed: bool) -> void:
 	var image := data.get_image(HTerrainData.CHANNEL_COLOR)
 	var texture := data.get_texture(HTerrainData.CHANNEL_COLOR, 0, true)
 	
@@ -529,7 +529,7 @@ func _paint_color(data: HTerrainData, position: Vector2, shift_pressed: bool):
 	p.paint_input(position)
 
 
-func _paint_mask(data: HTerrainData, position: Vector2, shift_pressed: bool):
+func _paint_mask(data: HTerrainData, position: Vector2, shift_pressed: bool) -> void:
 	var image := data.get_image(HTerrainData.CHANNEL_COLOR)
 	var texture := data.get_texture(HTerrainData.CHANNEL_COLOR, 0, true)
 	
@@ -551,7 +551,7 @@ func _paint_mask(data: HTerrainData, position: Vector2, shift_pressed: bool):
 	p.paint_input(position)
 
 
-func _paint_detail(data: HTerrainData, position: Vector2, shift_pressed: bool):
+func _paint_detail(data: HTerrainData, position: Vector2, shift_pressed: bool) -> void:
 	var image := data.get_image(HTerrainData.CHANNEL_DETAIL, _detail_index)
 	var texture := data.get_texture(HTerrainData.CHANNEL_DETAIL, _detail_index, true)
 	var heightmap_texture = data.get_texture(HTerrainData.CHANNEL_HEIGHT, 0)
@@ -574,7 +574,7 @@ func _paint_detail(data: HTerrainData, position: Vector2, shift_pressed: bool):
 	p.paint_input(position)
 
 
-func _set_slope_limit_shader_params(p: HT_Painter, heightmap_texture: Texture):
+func _set_slope_limit_shader_params(p: HT_Painter, heightmap_texture: Texture2D) -> void:
 	p.set_brush_shader_param("u_normal_min_y", cos(_slope_limit_high_angle))
 	p.set_brush_shader_param("u_normal_max_y", cos(_slope_limit_low_angle) + 0.001)
 	p.set_brush_shader_param("u_heightmap", heightmap_texture)

@@ -27,27 +27,27 @@ var _image_cache: HT_ImageFileCache
 var _logger = HT_Logger.get_for(self)
 
 
-func set_terrain(terrain):
+func set_terrain(terrain: HTerrain) -> void:
 	if _terrain == terrain:
 		return
 	_terrain = terrain
 	_update_list()
 
 
-func set_undo_redo(ur: EditorUndoRedoManager):
+func set_undo_redo(ur: EditorUndoRedoManager) -> void:
 	assert(ur != null)
 	_undo_redo_manager = ur
 
 
-func set_image_cache(image_cache: HT_ImageFileCache):
+func set_image_cache(image_cache: HT_ImageFileCache) -> void:
 	_image_cache = image_cache
 
 
-func set_layer_index(i: int):
+func set_layer_index(i: int) -> void:
 	_item_list.select(i, true)
 
 
-func _update_list():
+func _update_list() -> void:
 	_item_list.clear()
 	
 	if _terrain == null:
@@ -88,11 +88,11 @@ func _update_list():
 					+"Add a HTerrainDetailLayer node as child of the terrain.")
 
 
-func _on_Add_pressed():
+func _on_Add_pressed() -> void:
 	_add_layer()
 
 
-func _on_Remove_pressed():
+func _on_Remove_pressed() -> void:
 	var selected = _item_list.get_selected_items()
 	if len(selected) == 0:
 		return
@@ -101,11 +101,11 @@ func _on_Remove_pressed():
 	_confirmation_dialog.popup_centered()
 
 
-func _on_ConfirmationDialog_confirmed():
+func _on_ConfirmationDialog_confirmed() -> void:
 	_remove_layer(_dialog_target)
 
 
-func _add_layer():
+func _add_layer() -> void:
 	assert(_terrain != null)
 	assert(_terrain.get_data() != null)
 	assert(_undo_redo_manager != null)
@@ -160,7 +160,7 @@ func _add_layer():
 	detail_selected.emit(index)
 
 
-func _remove_layer(map_index: int):
+func _remove_layer(map_index: int) -> void:
 	var terrain_data: HTerrainData = _terrain.get_data()
 	
 	# First, cache image data
@@ -198,5 +198,5 @@ func _remove_layer(map_index: int):
 	detail_list_changed.emit()
 
 
-func _on_ItemList_item_selected(index):
+func _on_ItemList_item_selected(index: int) -> void:
 	detail_selected.emit(index)

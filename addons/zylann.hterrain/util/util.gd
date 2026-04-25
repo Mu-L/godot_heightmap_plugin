@@ -200,7 +200,7 @@ static func get_cropped_image_params(src_w: int, src_h: int, dst_w: int, dst_h: 
 # Generic way to apply editor scale to a plugin UI scene.
 # It is slower than doing it manually on specific controls.
 # Takes a node as root because since Godot 4 Window dialogs are no longer Controls.
-static func apply_dpi_scale(root: Node, dpi_scale: float):
+static func apply_dpi_scale(root: Node, dpi_scale: float) -> void:
 	if dpi_scale == 1.0:
 		return
 	var to_process := [root]
@@ -481,7 +481,7 @@ static func get_pixel_clamped(im: Image, x: int, y: int) -> Color:
 	return im.get_pixel(x, y)
 
 
-static func update_configuration_warning(node: Node, recursive: bool):
+static func update_configuration_warning(node: Node, recursive: bool) -> void:
 	if not Engine.is_editor_hint():
 		return
 	node.update_configuration_warnings()
@@ -521,7 +521,11 @@ static func write_import_file(settings: Dictionary, imp_fpath: String, logger) -
 
 
 static func update_texture_partial(
-	tex: ImageTexture, im: Image, src_rect: Rect2i, dst_pos: Vector2i):
+	tex: ImageTexture, 
+	im: Image, 
+	src_rect: Rect2i, 
+	dst_pos: Vector2i
+) -> void:
 	
 	#               ..ooo@@@XXX%%%xx..
 	#            .oo@@XXX%x%xxx..     ` .

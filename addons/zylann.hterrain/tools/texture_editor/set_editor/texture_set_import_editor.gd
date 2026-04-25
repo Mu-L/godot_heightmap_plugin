@@ -90,7 +90,7 @@ class HT_TextureSetImportEditorSlot:
 	var texture_paths := []
 	var flip_normalmap_y := false
 	
-	func _init():
+	func _init() -> void:
 		for i in HTerrainTextureSet.SRC_TYPE_COUNT:
 			texture_paths.append("")
 
@@ -104,7 +104,7 @@ var _import_settings := {
 }
 
 
-func _init():
+func _init() -> void:
 	get_ok_button().hide()
 	
 	# Default data
@@ -113,7 +113,7 @@ func _init():
 		_slots_data.append(HT_TextureSetImportEditorSlot.new())
 
 
-func _ready():
+func _ready() -> void:
 	if HT_Util.is_in_edited_scene(self):
 		return
 
@@ -137,7 +137,7 @@ func _ready():
 	_texture_editors[HTerrainTextureSet.SRC_TYPE_NORMAL].set_material(_normalmap_material)
 
 
-func setup_dialogs(parent: Node):
+func setup_dialogs(parent: Node) -> void:
 	var d = HT_EditorUtil.create_open_image_dialog()
 	d.file_selected.connect(_on_LoadTextureDialog_file_selected)
 	_load_texture_dialog = d
@@ -167,7 +167,7 @@ func setup_dialogs(parent: Node):
 	_update_ui_from_data()
 
 
-func _notification(what: int):
+func _notification(what: int) -> void:
 	if what == NOTIFICATION_EXIT_TREE:
 		# Have to check for null in all of them,
 		# because otherwise it breaks in the scene editor...
@@ -184,15 +184,15 @@ func _notification(what: int):
 
 
 # TODO Is it still necessary for an import tab?
-func set_undo_redo(ur: EditorUndoRedoManager):
+func set_undo_redo(ur: EditorUndoRedoManager) -> void:
 	_undo_redo_manager = ur
 
 
-func set_editor_file_system(efs: EditorFileSystem):
+func set_editor_file_system(efs: EditorFileSystem) -> void:
 	_editor_file_system = efs
 
 
-func set_texture_set(texture_set: HTerrainTextureSet):
+func set_texture_set(texture_set: HTerrainTextureSet) -> void:
 	if _texture_set == texture_set:
 		# TODO What if the set was actually modified since?
 		return
@@ -300,7 +300,7 @@ func _parse_json_file(fpath: String) -> Dictionary:
 	return json.data
 
 
-func _update_ui_from_data():
+func _update_ui_from_data() -> void:
 	var prev_selected_items := _slots_list.get_selected_items()
 	
 	_slots_list.clear()
@@ -336,14 +336,14 @@ func _update_ui_from_data():
 	_remove_slot_button.disabled = (len(_slots_data) == 0)
 
 
-static func _set_selected_id(ob: OptionButton, id: int):
+static func _set_selected_id(ob: OptionButton, id: int) -> void:
 	for i in ob.get_item_count():
 		if ob.get_item_id(i) == id:
 			ob.selected = i
 			break
 
 
-func _select_slot(slot_index: int):
+func _select_slot(slot_index: int) -> void:
 	assert(slot_index >= 0)
 	assert(slot_index < len(_slots_data))
 	var slot = _slots_data[slot_index]
@@ -358,7 +358,7 @@ func _select_slot(slot_index: int):
 	_normalmap_material.set_shader_parameter("u_flip_y", slot.flip_normalmap_y)
 
 
-func _set_ui_slot_texture_from_path(im_path: String, type: int):
+func _set_ui_slot_texture_from_path(im_path: String, type: int) -> void:
 	var ed = _texture_editors[type]
 
 	if im_path == "":
@@ -392,7 +392,7 @@ func _set_ui_slot_texture_from_path(im_path: String, type: int):
 	ed.set_texture_tooltip(im_path)
 
 
-func _set_source_image(fpath: String, type: int):
+func _set_source_image(fpath: String, type: int) -> void:
 	_set_ui_slot_texture_from_path(fpath, type)
 
 	var slot_index : int = _slots_list.get_selected_items()[0]
@@ -402,7 +402,7 @@ func _set_source_image(fpath: String, type: int):
 	slot.texture_paths[type] = fpath
 
 
-func _set_import_property(key: String, value):
+func _set_import_property(key: String, value: Variant) -> void:
 	var prev_value = _import_settings[key]
 	# This is needed, notably because CheckBox emits a signal too when we set it from code...
 	if prev_value == value:
@@ -411,12 +411,12 @@ func _set_import_property(key: String, value):
 	_import_settings[key] = value
 
 
-func _on_texture_load_pressed(type: int):
+func _on_texture_load_pressed(type: int) -> void:
 	_load_texture_type = type
 	_load_texture_dialog.popup_centered_ratio()
 
 
-func _on_LoadTextureDialog_file_selected(fpath: String):
+func _on_LoadTextureDialog_file_selected(fpath: String) -> void:
 	_set_source_image(fpath, _load_texture_type)
 	
 	if _load_texture_type == HTerrainTextureSet.SRC_TYPE_ALBEDO:
@@ -424,7 +424,7 @@ func _on_LoadTextureDialog_file_selected(fpath: String):
 
 
 # Attempts to load source images of other types by looking at how the albedo file was named
-func _smart_pick_files(albedo_fpath: String):
+func _smart_pick_files(albedo_fpath: String) -> void:
 	var albedo_words = _smart_pick_file_keywords[HTerrainTextureSet.SRC_TYPE_ALBEDO]
 	
 	var albedo_fname := albedo_fpath.get_file()
@@ -506,15 +506,15 @@ static func _get_files_in_directory(dirpath: String, logger) -> Array:
 	return files
 
 
-func _on_texture_clear_pressed(type: int):
+func _on_texture_clear_pressed(type: int) -> void:
 	_set_source_image("", type)
 
 
-func _on_SlotsList_item_selected(index: int):
+func _on_SlotsList_item_selected(index: int) -> void:
 	_select_slot(index)
 
 
-func _on_ImportModeSelector_item_selected(index: int):
+func _on_ImportModeSelector_item_selected(index: int) -> void:
 	var mode : int = _import_mode_selector.get_item_id(index)
 	if mode != _import_mode:
 		#_set_import_property("mode", mode)
@@ -522,31 +522,31 @@ func _on_ImportModeSelector_item_selected(index: int):
 		_update_ui_from_data()
 
 
-func _on_CompressionSelector_item_selected(index: int):
+func _on_CompressionSelector_item_selected(index: int) -> void:
 	var compression : int = _compression_selector.get_item_id(index)
 	_set_import_property("compression", compression)
 
 
-func _on_MipmapsCheckbox_toggled(button_pressed: bool):
+func _on_MipmapsCheckbox_toggled(button_pressed: bool) -> void:
 	_set_import_property("mipmaps", button_pressed)
 
 
-func _on_ResolutionSpinBox_value_changed(value):
+func _on_ResolutionSpinBox_value_changed(value) -> void:
 	_set_import_property("resolution", int(value))
 
 
-func _on_TextureArrayPrefixLineEdit_text_changed(new_text: String):
+func _on_TextureArrayPrefixLineEdit_text_changed(new_text: String) -> void:
 	_set_import_property("output_prefix", new_text)
 
 
-func _on_AddSlotButton_pressed():
+func _on_AddSlotButton_pressed() -> void:
 	var i := len(_slots_data)
 	_slots_data.append(HT_TextureSetImportEditorSlot.new())
 	_update_ui_from_data()
 	_select_slot(i)
 
 
-func _on_RemoveSlotButton_pressed():
+func _on_RemoveSlotButton_pressed() -> void:
 	if _slots_list.get_item_count() == 0:
 		return
 	var selected_item = _slots_list.get_selected_items()[0]
@@ -555,34 +555,34 @@ func _on_RemoveSlotButton_pressed():
 	_delete_confirmation_popup.popup_centered()
 
 
-func _on_delete_confirmation_popup_confirmed():
+func _on_delete_confirmation_popup_confirmed() -> void:
 	var selected_item : int = _slots_list.get_selected_items()[0]
 	_slots_data.remove_at(selected_item)
 	_update_ui_from_data()
 
 
-func _on_CancelButton_pressed():
+func _on_CancelButton_pressed() -> void:
 	hide()
 
 
-func _on_BrowseImportDirectory_pressed():
+func _on_BrowseImportDirectory_pressed() -> void:
 	_open_dir_dialog.popup_centered_ratio()
 
 
-func _on_ImportDirectoryLineEdit_text_changed(new_text: String):
+func _on_ImportDirectoryLineEdit_text_changed(new_text: String) -> void:
 	pass
 
 
-func _on_OpenDirDialog_dir_selected(dir_path: String):
+func _on_OpenDirDialog_dir_selected(dir_path: String) -> void:
 	_import_directory_line_edit.text = dir_path
 
 
-func _show_error(message: String):
+func _show_error(message: String) -> void:
 	_error_popup.dialog_text = message
 	_error_popup.popup_centered()
 
 
-func _on_NormalMapFlipY_toggled(button_pressed: bool):
+func _on_NormalMapFlipY_toggled(button_pressed: bool) -> void:
 	var slot_index : int = _slots_list.get_selected_items()[0]
 	var slot : HT_TextureSetImportEditorSlot = _slots_data[slot_index]
 	slot.flip_normalmap_y = button_pressed
@@ -606,7 +606,7 @@ func _get_undo_redo_for_texture_set() -> UndoRedo:
 		_undo_redo_manager.get_object_history_id(_texture_set))
 
 
-func _on_ImportButton_pressed():
+func _on_ImportButton_pressed() -> void:
 	if _texture_set == null:
 		_show_error("No HTerrainTextureSet selected.")
 		return

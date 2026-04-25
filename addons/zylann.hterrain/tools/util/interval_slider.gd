@@ -18,7 +18,7 @@ var _values = [0.2, 0.6]
 var _grabbing := false
 
 
-func _get_property_list():
+func _get_property_list() -> Array:
 	return [
 		{
 			"name": "min_value",
@@ -66,7 +66,7 @@ func _set(key: StringName, value: Variant) -> bool:
 	return false
 
 
-func set_values(low: float, high: float):
+func set_values(low: float, high: float) -> void:
 	if low > high:
 		low = high
 	if high < low:
@@ -76,7 +76,7 @@ func set_values(low: float, high: float):
 	queue_redraw()
 
 
-func set_value(i: int, v: float, notify_change: bool):
+func set_value(i: int, v: float, notify_change: bool) -> void:
 	var min_value = _min_value
 	var max_value = _max_value
 	
@@ -138,14 +138,14 @@ func _get_closest_index(ratio: float) -> int:
 	return VALUE_HIGH
 
 
-func _set_from_pixel(px: float):
+func _set_from_pixel(px: float) -> void:
 	var r := (px - FG_MARGIN) / (size.x - FG_MARGIN * 2.0)
 	var i := _get_closest_index(r)
 	var v := _ratio_to_value(r)
 	set_value(i, v, true)
 
 
-func _gui_input(event: InputEvent):
+func _gui_input(event: InputEvent) -> void:
 	if event is InputEventMouseButton:
 		if event.pressed:
 			if event.button_index == MOUSE_BUTTON_LEFT:
@@ -160,7 +160,7 @@ func _gui_input(event: InputEvent):
 			_set_from_pixel(event.position.x)			
 
 
-func _draw():
+func _draw() -> void:
 	var grabber_width := 3
 	var background_v_margin := 0
 	var foreground_margin := FG_MARGIN

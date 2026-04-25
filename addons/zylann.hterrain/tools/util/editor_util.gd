@@ -63,13 +63,13 @@ static func create_open_texture_array_dialog() -> ConfirmationDialog:
 
 # TODO Post a proposal, we need a file dialog filtering on resource types, not on file extensions!
 
-static func _add_image_filters(file_dialog):
+static func _add_image_filters(file_dialog) -> void:
 	file_dialog.add_filter("*.png ; PNG files")
 	file_dialog.add_filter("*.jpg ; JPG files")
 	#file_dialog.add_filter("*.exr ; EXR files")
 
 
-static func _add_texture_filters(file_dialog):
+static func _add_texture_filters(file_dialog) -> void:
 	_add_image_filters(file_dialog)
 	# Godot
 	file_dialog.add_filter("*.ctex ; CompressedTexture files")
@@ -77,7 +77,7 @@ static func _add_texture_filters(file_dialog):
 	# file_dialog.add_filter("*.packed_tex ; HTerrainPackedTexture files")
 
 
-static func _add_texture_array_filters(file_dialog):
+static func _add_texture_array_filters(file_dialog) -> void:
 	_add_image_filters(file_dialog)
 	# Godot
 	file_dialog.add_filter("*.ctexarray ; TextureArray files")
@@ -101,4 +101,3 @@ static func load_texture(path: String, logger) -> Texture:
 		return null
 	var itex := ImageTexture.create_from_image(im)
 	return itex
-

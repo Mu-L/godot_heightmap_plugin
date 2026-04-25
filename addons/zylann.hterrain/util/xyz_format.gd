@@ -76,7 +76,7 @@ static func load_bounds(f: FileAccess) -> HT_XYZBounds:
 # Loads points into an image with existing dimensions and format.
 # `f` must be positioned at the beginning of the series of points.
 # If `bounds` is `null`, it will be computed.
-static func load_heightmap(f: FileAccess, dst_image: Image, bounds: HT_XYZBounds):
+static func load_heightmap(f: FileAccess, dst_image: Image, bounds: HT_XYZBounds) -> void:
 	# We are not going to read the entire file directly in memory, because it can be really big.
 	# Instead we'll parse it directly and the only thing we retain in memory is the heightmap.
 	# This can be really slow on big files. If we can assume the file is square and points

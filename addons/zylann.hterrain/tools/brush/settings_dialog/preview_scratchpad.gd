@@ -15,7 +15,7 @@ const HT_Util = preload("../../../util/util.gd")
 var _logger := HT_Logger.get_for(self)
 
 
-func _ready():
+func _ready() -> void:
 	if HT_Util.is_in_edited_scene(self):
 		# If it runs in the edited scene,
 		# saving the scene would also save the ImageTexture in it...
@@ -27,7 +27,7 @@ func _ready():
 	_painter.get_brush().set_shapes([default_brush_texture])
 
 
-func reset_image():
+func reset_image() -> void:
 	var image = Image.create(_texture_rect.size.x, _texture_rect.size.y, false, Image.FORMAT_RGB8)
 	image.fill(Color(1,1,1))
 	
@@ -47,7 +47,7 @@ func get_painter() -> HT_PreviewPainter:
 	return _painter
 
 
-func _gui_input(event):
+func _gui_input(event: InputEvent) -> void:
 	if event is InputEventMouseMotion:
 		if Input.is_mouse_button_pressed(MOUSE_BUTTON_LEFT):
 			_painter.paint_input(event.position, event.pressure)
@@ -63,7 +63,7 @@ func _gui_input(event):
 				_painter.get_brush().on_paint_end()
 
 
-func _draw():
+func _draw() -> void:
 	var mpos = get_local_mouse_position()
 	var brush = _painter.get_brush()
 	draw_arc(mpos, 0.5 * brush.get_size(), -PI, PI, 32, Color(1, 0.2, 0.2), 2.0, true)

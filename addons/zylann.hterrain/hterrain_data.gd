@@ -1,4 +1,3 @@
-
 # Holds data of the terrain.
 # This is mostly a set of textures using specific formats, some precalculated, and metadata.
 
@@ -200,12 +199,12 @@ var _edit_disable_apply_undo := false
 var _logger := HT_Logger.get_for(self)
 
 
-func _init():
+func _init() -> void:
 	# Initialize default maps
 	_set_default_maps()
 
 
-func _set_default_maps():
+func _set_default_maps() -> void:
 	_maps.resize(CHANNEL_COUNT)
 	for c in CHANNEL_COUNT:
 		var maps := []
@@ -215,7 +214,7 @@ func _set_default_maps():
 		_maps[c] = maps
 
 
-func _edit_load_default():
+func _edit_load_default() -> void:
 	_logger.debug("Loading default data")
 	_set_default_maps()
 	resize(DEFAULT_RESOLUTION)
@@ -231,13 +230,13 @@ func get_resolution() -> int:
 
 
 # @obsolete
-func set_resolution(p_res):
+func set_resolution(p_res) -> void:
 	_logger.error("`HTerrainData.set_resolution()` is obsolete, use `resize()` instead")
 	resize(p_res)
 
 
 # @obsolete
-func set_resolution2(p_res, update_normals):
+func set_resolution2(p_res, update_normals) -> void:
 	_logger.error("`HTerrainData.set_resolution2()` is obsolete, use `resize()` instead")
 	resize(p_res, true, Vector2(-1, -1))
 
@@ -272,7 +271,7 @@ func set_resolution2(p_res, update_normals):
 # One chunk has 16x16 quads, so it needs 17x17 cells,
 # not 16, where the last cell is shared with the next chunk.
 # As a result, a map of 4x4 chunks needs 65x65 cells, not 64x64.
-func resize(p_res: int, stretch := true, anchor := Vector2(-1, -1)):
+func resize(p_res: int, stretch := true, anchor := Vector2(-1, -1)) -> void:
 	assert(typeof(p_res) == TYPE_INT)
 	assert(typeof(stretch) == TYPE_BOOL)
 	assert(typeof(anchor) == TYPE_VECTOR2)
@@ -470,7 +469,7 @@ func get_heights_region(x0: int, y0: int, w: int, h: int) -> PackedFloat32Array:
 
 # Checks that all images stored in maps have the correct format.
 # May be called in case someone uses `copy_from()` to update images and uses wrong formats.
-func check_images():
+func check_images() -> void:
 	var errors := PackedStringArray()
 	
 	for map_type in _maps.size():
@@ -544,8 +543,8 @@ func notify_region_change(
 	p_map_type: int,
 	p_index := 0,
 	p_upload_to_texture := true,
-	p_update_vertical_bounds := true):
-	
+	p_update_vertical_bounds := true
+) -> void:
 	assert(p_map_type >= 0 and p_map_type < CHANNEL_COUNT)
 	
 	var min_x := int(p_rect.position.x)
@@ -566,7 +565,7 @@ func notify_region_change(
 	changed.emit()
 
 
-func notify_full_change():
+func notify_full_change() -> void:
 	for maptype in range(CHANNEL_COUNT):
 		# Ignore normals because they get updated along with heights
 		if maptype == CHANNEL_NORMAL:
@@ -576,11 +575,11 @@ func notify_full_change():
 			notify_region_change(Rect2(0, 0, _resolution, _resolution), maptype, index)
 
 
-func _edit_set_disable_apply_undo(e: bool):
+func _edit_set_disable_apply_undo(e: bool) -> void:
 	_edit_disable_apply_undo = e
 
 
-func _edit_apply_undo(undo_data: Dictionary, image_cache: HT_ImageFileCache):
+func _edit_apply_undo(undo_data: Dictionary, image_cache: HT_ImageFileCache) -> void:
 	if _edit_disable_apply_undo:
 		return
 
@@ -656,7 +655,10 @@ func _edit_apply_undo(undo_data: Dictionary, image_cache: HT_ImageFileCache):
 
 # TODO Support map indexes
 # Used for undoing full-terrain changes
-func _edit_apply_maps_from_file_cache(image_file_cache: HT_ImageFileCache, map_ids: Dictionary):
+func _edit_apply_maps_from_file_cache(
+	image_file_cache: HT_ImageFileCache, 
+	map_ids: Dictionary
+) -> void:
 	if _edit_disable_apply_undo:
 		return
 	for map_type in map_ids:
@@ -671,11 +673,18 @@ func _edit_apply_maps_from_file_cache(image_file_cache: HT_ImageFileCache, map_i
 		notify_region_change(rect, map_type, index)
 
 
-func _upload_channel(channel: int, index: int):
+func _upload_channel(channel: int, index: int) -> void:
 	_upload_region(channel, index, 0, 0, _resolution, _resolution)
 
 
-func _upload_region(channel: int, index: int, min_x: int, min_y: int, size_x: int, size_y: int):
+func _upload_region(
+	channel: int, 
+	index: int, 
+	min_x: int, 
+	min_y: int, 
+	size_x: int, 
+	size_y: int
+) -> void:
 	#_logger.debug("Upload ", min_x, ", ", min_y, ", ", size_x, "x", size_y)
 	#var time_before = OS.get_ticks_msec()
 
@@ -752,7 +761,7 @@ func _edit_add_detail_map():
 
 
 # TODO Deprecated
-func _edit_remove_detail_map(index):
+func _edit_remove_detail_map(index) -> void:
 	_edit_remove_map(CHANNEL_DETAIL, index)
 
 
@@ -774,7 +783,12 @@ func _edit_add_map(map_type: int) -> int:
 
 
 # Editor-only. Used for undo/redo.
-func _edit_insert_map_from_image_cache(map_type: int, index: int, image_cache, image_id: int):
+func _edit_insert_map_from_image_cache(
+	map_type: int, 
+	index: int, 
+	image_cache: HT_ImageFileCache, 
+	image_id: int
+) -> void:
 	if _edit_disable_apply_undo:
 		return
 	_logger.debug(str("Adding map of type ", get_channel_name(map_type), 
@@ -788,7 +802,7 @@ func _edit_insert_map_from_image_cache(map_type: int, index: int, image_cache, i
 	map_added.emit(map_type, index)
 
 
-func _edit_remove_map(map_type: int, index: int):
+func _edit_remove_map(map_type: int, index: int) -> void:
 	# TODO Check minimum and maximum instances of a given map
 	_logger.debug(str("Removing map ", get_channel_name(map_type), " at index ", index))
 	var maps : Array = _maps[map_type]
@@ -849,7 +863,8 @@ func get_aabb() -> AABB:
 
 
 # Not so useful in itself, but GDScript is slow,
-# so I needed it to speed up the LOD hack I had to do to take height into account
+# so I needed it to speed up the LOD hack I had to do to take height into account.
+# x is min height, y is max height
 func get_point_aabb(cell_x: int, cell_y: int) -> Vector2:
 	assert(typeof(cell_x) == TYPE_INT)
 	assert(typeof(cell_y) == TYPE_INT)
@@ -870,9 +885,12 @@ func get_point_aabb(cell_x: int, cell_y: int) -> Vector2:
 	return Vector2(b.r, b.g)
 
 
-func get_region_aabb(origin_in_cells_x: int, origin_in_cells_y: int,
-	size_in_cells_x: int, size_in_cells_y: int) -> AABB:
-
+func get_region_aabb(
+	origin_in_cells_x: int, 
+	origin_in_cells_y: int,
+	size_in_cells_x: int, 
+	size_in_cells_y: int
+) -> AABB:
 	assert(typeof(origin_in_cells_x) == TYPE_INT)
 	assert(typeof(origin_in_cells_y) == TYPE_INT)
 	assert(typeof(size_in_cells_x) == TYPE_INT)
@@ -909,7 +927,7 @@ func get_region_aabb(origin_in_cells_x: int, origin_in_cells_y: int,
 	return aabb
 
 
-func _update_all_vertical_bounds():
+func _update_all_vertical_bounds() -> void:
 	var csize_x := _resolution / VERTICAL_BOUNDS_CHUNK_SIZE
 	var csize_y := _resolution / VERTICAL_BOUNDS_CHUNK_SIZE
 	_logger.debug(str("Updating all vertical bounds... (", csize_x , "x", csize_y, " chunks)"))
@@ -917,7 +935,7 @@ func _update_all_vertical_bounds():
 	_update_vertical_bounds(0, 0, _resolution - 1, _resolution - 1)
 
 
-func update_vertical_bounds(p_rect: Rect2):
+func update_vertical_bounds(p_rect: Rect2) -> void:
 	var min_x := int(p_rect.position.x)
 	var min_y := int(p_rect.position.y)
 	var size_x := int(p_rect.size.x)
@@ -926,9 +944,12 @@ func update_vertical_bounds(p_rect: Rect2):
 	_update_vertical_bounds(min_x, min_y, size_x, size_y)
 
 
-func _update_vertical_bounds(origin_in_cells_x: int, origin_in_cells_y: int, \
-							size_in_cells_x: int, size_in_cells_y: int):
-
+func _update_vertical_bounds(
+	origin_in_cells_x: int, 
+	origin_in_cells_y: int,
+	size_in_cells_x: int, 
+	size_in_cells_y: int
+) -> void:
 	var cmin_x := origin_in_cells_x / VERTICAL_BOUNDS_CHUNK_SIZE
 	var cmin_y := origin_in_cells_y / VERTICAL_BOUNDS_CHUNK_SIZE
 
@@ -1065,7 +1086,7 @@ func _get_total_map_count() -> int:
 	return s
 
 
-func _load_metadata(path: String):
+func _load_metadata(path: String) -> void:
 	var f = FileAccess.open(path, FileAccess.READ)
 	assert(f != null)
 	var text = f.get_as_text()
@@ -1078,7 +1099,7 @@ func _load_metadata(path: String):
 	_deserialize_metadata(json.data)
 
 
-func _save_metadata(path: String):
+func _save_metadata(path: String) -> void:
 	var d = _serialize_metadata()
 	var text = JSON.stringify(d, "\t", true)
 	var f = FileAccess.open(path, FileAccess.WRITE)
@@ -1142,10 +1163,11 @@ func _deserialize_metadata(dict: Dictionary) -> bool:
 	return true
 
 
-func load_data(dir_path: String, 
+func load_data(
+	dir_path: String,
 	# Same as default in ResourceLoader.load()
-	resource_loader_cache_mode := ResourceLoader.CACHE_MODE_REUSE):
-	
+	resource_loader_cache_mode := ResourceLoader.CACHE_MODE_REUSE,
+) -> void:
 	_locked = true
 
 	_load_metadata(dir_path.path_join(META_FILENAME))
@@ -1183,7 +1205,7 @@ func load_data(dir_path: String,
 # Reloads the entire terrain from files, disregarding cached resources.
 # This could be useful to reload a terrain while playing the game. You can do some edits in the
 # editor, save the terrain and then reload in-game.
-func reload():
+func reload() -> void:
 	_logger.debug("Reloading terrain data...")
 	var dir_path := resource_path.get_base_dir()
 	load_data(dir_path, ResourceLoader.CACHE_MODE_IGNORE)
@@ -1755,7 +1777,7 @@ func _import_map(map_type: int, path: String) -> bool:
 
 
 # TODO Workaround for https://github.com/Zylann/godot_heightmap_plugin/issues/101
-func _dummy_function():
+func _dummy_function() -> void:
 	pass
 
 

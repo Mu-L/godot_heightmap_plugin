@@ -47,7 +47,7 @@ class HT_InspectorVectorEditor extends HT_InspectorEditor:
 		yed.value = v.y
 		value = v
 	
-	func _component_changed(v, i):
+	func _component_changed(v: float, i: int) -> void:
 		value[i] = v
 		value_changed.emit(value)		
 
@@ -63,7 +63,7 @@ var _editors := {}
 @onready var _file_dialog = get_node("OpenFileDialog")
 
 
-func _ready():
+func _ready() -> void:
 	_file_dialog.visibility_changed.connect(
 		call_deferred.bind("_on_file_dialog_visibility_changed"))
 # Test
@@ -92,7 +92,7 @@ func _ready():
 
 
 # TODO Rename clear_schema
-func clear_prototype():
+func clear_prototype() -> void:
 	_editors.clear()
 	var i = _grid_container.get_child_count() - 1
 	while i >= 0:
@@ -116,12 +116,12 @@ func get_values():
 	return values
 
 
-func set_value(key: String, value):
+func set_value(key: String, value: Variant) -> void:
 	var editor = _editors[key]
 	editor.setter.call(value)
 
 
-func set_values(values: Dictionary):
+func set_values(values: Dictionary) -> void:
 	for key in values:
 		if _editors.has(key):
 			var editor = _editors[key]
@@ -130,7 +130,7 @@ func set_values(values: Dictionary):
 
 
 # TODO Rename set_schema
-func set_prototype(proto: Dictionary):
+func set_prototype(proto: Dictionary) -> void:
 	clear_prototype()
 	
 	for key in proto:
@@ -156,13 +156,13 @@ func set_prototype(proto: Dictionary):
 	_prototype = proto
 
 
-func trigger_all_modified():
+func trigger_all_modified() -> void:
 	for key in _prototype:
 		var value = _editors[key].getter.call_func()
 		property_changed.emit(key, value)
 
 
-func set_property_enabled(prop_name: String, enabled: bool):
+func set_property_enabled(prop_name: String, enabled: bool) -> void:
 	var ed = _editors[prop_name]
 	
 	if ed.control is BaseButton:
@@ -377,7 +377,7 @@ func _make_editor(key: String, prop: Dictionary) -> HT_InspectorEditor:
 	return ed
 
 
-static func _setup_range_control(range_control: Range, prop):
+static func _setup_range_control(range_control: Range, prop: Dictionary) -> void:
 	if prop.type == TYPE_INT:
 		range_control.step = 1
 		range_control.rounded = true
@@ -394,12 +394,12 @@ static func _setup_range_control(range_control: Range, prop):
 		range_control.max_value = 0x7fffffff
 
 
-func _property_edited(value, key):
+func _property_edited(value: Variant, key: String) -> void:
 	if _edit_signal:
 		property_changed.emit(key, value)
 
 
-func _randomize_property_pressed(key):
+func _randomize_property_pressed(key: String) -> void:
 	var prop = _prototype[key]
 	var v = 0
 	
@@ -419,21 +419,21 @@ func _randomize_property_pressed(key):
 	_editors[key].setter.call(v)
 
 
-func _dummy_getter():
+func _dummy_getter() -> void:
 	pass
 
 
-func _dummy_setter(v):
+func _dummy_setter(_unused_v: Variant) -> void:
 	# TODO Could use extra data to store the value anyways?
 	pass
 
 
-func _on_ask_load_texture(key):
+func _on_ask_load_texture(key: String) -> void:
 	_open_file_dialog(["*.png ; PNG files"], _on_texture_selected.bind(key), 
 		FileDialog.ACCESS_RESOURCES)
 
 
-func _open_file_dialog(filters: Array, callback: Callable, access: int):
+func _open_file_dialog(filters: Array, callback: Callable, access: int) -> void:
 	_file_dialog.access = access
 	_file_dialog.clear_filters()
 	for filter in filters:
@@ -447,7 +447,7 @@ func _open_file_dialog(filters: Array, callback: Callable, access: int):
 	_file_dialog.popup_centered_ratio(0.7)
 
 
-func _on_file_dialog_visibility_changed():
+func _on_file_dialog_visibility_changed() -> void:
 	if _file_dialog.visible == false:
 		# Disconnect listeners automatically,
 		# so we can re-use the same dialog with different listeners
@@ -456,7 +456,7 @@ func _on_file_dialog_visibility_changed():
 			_file_dialog.file_selected.disconnect(con.callable)
 
 
-func _on_texture_selected(path: String, key):
+func _on_texture_selected(path: String, key: String) -> void:
 	var tex = load(path)
 	if tex == null:
 		return
@@ -465,20 +465,20 @@ func _on_texture_selected(path: String, key):
 	_property_edited(tex, key)
 
 
-func _on_ask_clear_texture(key):
+func _on_ask_clear_texture(key: String) -> void:
 	var ed = _editors[key]
 	ed.setter.call(null)
 	_property_edited(null, key)
 
 
-func _on_ask_load_file(key, exts):
+func _on_ask_load_file(key: String, exts: PackedStringArray) -> void:
 	var filters := []
 	for ext in exts:
 		filters.append(str("*.", ext, " ; ", ext.to_upper(), " files"))
 	_open_file_dialog(filters, _on_file_selected.bind(key), FileDialog.ACCESS_FILESYSTEM)
 
 
-func _on_file_selected(path, key):
+func _on_file_selected(path: String, key: String) -> void:
 	var ed = _editors[key]
 	ed.setter.call(path)
 	_property_edited(path, key)

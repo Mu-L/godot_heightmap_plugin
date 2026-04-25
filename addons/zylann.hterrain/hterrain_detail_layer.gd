@@ -210,7 +210,7 @@ var _pending_chunk_updates: Array[Vector2i] = []
 var _force_chunk_updates_next_frame: bool = false
 
 
-func _init():
+func _init() -> void:
 	_default_shader = load(DEFAULT_SHADER_PATH)
 	_material = ShaderMaterial.new()
 	_material.shader = _default_shader
@@ -223,7 +223,7 @@ func _init():
 	_multimesh.use_colors = true
 
 
-func _enter_tree():
+func _enter_tree() -> void:
 	var terrain = _get_terrain()
 	if terrain != null:
 		terrain.transform_changed.connect(_on_terrain_transform_changed)
@@ -238,7 +238,7 @@ func _enter_tree():
 	_update_material()
 
 
-func _exit_tree():
+func _exit_tree() -> void:
 	var terrain = _get_terrain()
 	if terrain != null:
 		terrain.transform_changed.disconnect(_on_terrain_transform_changed)
@@ -322,18 +322,19 @@ func get_shader_param(param_name: String):
 	return HT_Util.get_shader_material_parameter(_material, param_name)
 
 
-func set_shader_param(param_name: String, v):
+func set_shader_param(param_name: String, v: Variant) -> void:
 	_material.set_shader_parameter(param_name, v)
 
 
-func _get_terrain():
+# TODO Untyped for now due to cyclic refs in older versions of Godot
+func _get_terrain(): # -> HTerrain
 	if is_inside_tree():
 		return get_parent()
 	return null
 
 
 # Compat
-func set_texture(tex: Texture):
+func set_texture(tex: Texture) -> void:
 	texture = tex
 
 
@@ -343,7 +344,7 @@ func get_texture() -> Texture:
 
 
 # Compat
-func set_layer_index(v: int):
+func set_layer_index(v: int) -> void:
 	layer_index = v
 
 
@@ -353,8 +354,8 @@ func get_layer_index() -> int:
 
 
 # Compat
-func set_view_distance(v: float):
-	return view_distance
+func set_view_distance(v: float) -> void:
+	view_distance = v
 
 
 # Compat
@@ -363,7 +364,7 @@ func get_view_distance() -> float:
 
 
 # Compat
-func set_custom_shader(shader: Shader):
+func set_custom_shader(shader: Shader) -> void:
 	custom_shader = shader
 
 
@@ -373,7 +374,7 @@ func get_custom_shader() -> Shader:
 
 
 # Compat
-func set_instance_mesh(p_mesh: Mesh):
+func set_instance_mesh(p_mesh: Mesh) -> void:
 	instance_mesh = p_mesh
 
 
@@ -383,7 +384,7 @@ func get_instance_mesh() -> Mesh:
 
 
 # Compat
-func set_render_layer_mask(mask: int):
+func set_render_layer_mask(mask: int) -> void:
 	render_layers = mask
 
 
@@ -402,7 +403,7 @@ func _get_used_mesh() -> Mesh:
 
 
 # Compat
-func set_density(v: float):
+func set_density(v: float) -> void:
 	density = v
 
 
@@ -414,12 +415,12 @@ func get_density() -> float:
 # Updates texture references and values that come from the terrain itself.
 # This is typically used when maps are being swapped around in terrain data,
 # so we can restore texture references that may break.
-func update_material():
+func update_material() -> void:
 	_update_material()
 	# Formerly update_ambient_wind, reset
 
 
-func _notification(what: int):
+func _notification(what: int) -> void:
 	match what:
 		NOTIFICATION_ENTER_WORLD:
 			_set_world(get_world_3d())
@@ -437,19 +438,19 @@ func _notification(what: int):
 			_multimesh_instance_pool.clear()
 
 
-func _set_visible(v: bool):
+func _set_visible(v: bool) -> void:
 	for k in _chunks:
 		var chunk: HT_DetailChunk = _chunks[k]
 		chunk.mmi.set_visible(v)
 
 
-func _set_world(w: World3D):
+func _set_world(w: World3D) -> void:
 	for k in _chunks:
 		var chunk: HT_DetailChunk = _chunks[k]
 		chunk.mmi.set_world(w)
 
 
-func _on_terrain_transform_changed(gt: Transform3D):
+func _on_terrain_transform_changed(gt: Transform3D) -> void:
 	_update_material()
 
 	var terrain = _get_terrain()
@@ -471,7 +472,7 @@ func _on_terrain_transform_changed(gt: Transform3D):
 		mmi.set_transform(_get_chunk_transform(terrain_transform, k.x, k.y))
 
 
-func process(delta: float, viewer_pos: Vector3):
+func process(delta: float, viewer_pos: Vector3) -> void:
 	var terrain = _get_terrain()
 	if terrain == null:
 		_logger.error("DetailLayer processing while terrain is null!")
@@ -611,7 +612,7 @@ static func ceildiv_vec2i_int(v: Vector2i, d: int) -> Vector2i:
 	return Vector2i(ceildiv(v.x, d), ceildiv(v.y, d))
 
 
-func _process_pending_updates(terrain, local_viewer_pos: Vector3):
+func _process_pending_updates(terrain, local_viewer_pos: Vector3) -> void:
 	# Defer this over multiple frames
 	var budget_us := 1000
 	var time_before := Time.get_ticks_usec()
@@ -678,7 +679,12 @@ func _get_chunk_transform(terrain_transform: Transform3D, cx: int, cz: int) -> T
 	return trans
 
 
-func _load_chunk(terrain_transform_without_map_scale: Transform3D, cx: int, cz: int, aabb: AABB):
+func _load_chunk(
+	terrain_transform_without_map_scale: Transform3D, 
+	cx: int, 
+	cz: int, 
+	aabb: AABB
+) -> void:
 	aabb.position.x = 0
 	aabb.position.z = 0
 
@@ -705,7 +711,7 @@ func _load_chunk(terrain_transform_without_map_scale: Transform3D, cx: int, cz: 
 	_chunks[Vector2i(cx, cz)] = chunk
 
 
-func _recycle_chunk(cpos2d: Vector2i):
+func _recycle_chunk(cpos2d: Vector2i) -> void:
 	var chunk: HT_DetailChunk = _chunks[cpos2d]
 	_chunks.erase(cpos2d)
 	chunk.mmi.set_visible(false)
@@ -721,7 +727,7 @@ func _get_ambient_wind_params() -> Vector2:
 	return Vector2(aw, _ambient_wind_time)
 
 
-func _update_material():
+func _update_material() -> void:
 	# Sets API shader properties. Custom properties are assumed to be set already
 	_logger.debug("Updating detail layer material")
 
@@ -774,7 +780,12 @@ func _update_material():
 	mat.set_shader_parameter("u_terrain_globalmap", globalmap_texture)
 
 
-func _add_debug_cube(terrain: Node3D, aabb: AABB, terrain_transform_without_scale: Transform3D):
+func _add_debug_cube(
+	# TODO Can't type due to cyclic refs in older versions of Godot
+	terrain: Node3D, # HTerrain
+	aabb: AABB, 
+	terrain_transform_without_scale: Transform3D
+) -> void:
 	var world: World3D = terrain.get_world_3d()
 
 	if _debug_wirecube_mesh == null:
@@ -796,7 +807,7 @@ func _add_debug_cube(terrain: Node3D, aabb: AABB, terrain_transform_without_scal
 	_debug_cubes.append(debug_cube)
 
 
-func _regen_multimesh():
+func _regen_multimesh() -> void:
 	# We modify the existing multimesh instead of replacing it.
 	# DirectMultiMeshInstance does not keep a strong reference to them,
 	# so replacing would break pooled instances.
@@ -849,7 +860,7 @@ func _get_configuration_warnings() -> PackedStringArray:
 
 
 # Compat
-func set_cast_shadow(option: int):
+func set_cast_shadow(option: int) -> void:
 	cast_shadow = option
 
 
@@ -858,13 +869,17 @@ func get_cast_shadow() -> int:
 	return cast_shadow
 
 
-func _on_custom_shader_changed():
+func _on_custom_shader_changed() -> void:
 	notify_property_list_changed()
 
 
 static func _generate_multimesh(
-		resolution: int, density: float, mesh: Mesh, multimesh: MultiMesh,
-		rng: RandomNumberGenerator):
+	resolution: int, 
+	density: float, 
+	mesh: Mesh, 
+	multimesh: MultiMesh,
+	rng: RandomNumberGenerator
+) -> void:
 	assert(multimesh != null)
 	
 	var position_randomness := 0.5

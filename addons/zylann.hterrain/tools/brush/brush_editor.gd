@@ -47,7 +47,7 @@ var _logger = HT_Logger.get_for(self)
 # TODO This is an ugly workaround for https://github.com/godotengine/godot/issues/19479
 @onready var _temp_node = get_node("Temp")
 @onready var _grid_container = get_node("GridContainer")
-func _set_visibility_of(node: Control, v: bool):
+func _set_visibility_of(node: Control, v: bool) -> void:
 	node.get_parent().remove_child(node)
 	if v:
 		_grid_container.add_child(node)
@@ -56,7 +56,7 @@ func _set_visibility_of(node: Control, v: bool):
 	node.visible = v
 
 
-func _ready():
+func _ready() -> void:
 	_size_slider.value_changed.connect(_on_size_slider_value_changed)
 	_size_slider.share(_size_spin_box)
 	_opacity_slider.value_changed.connect(_on_opacity_slider_value_changed)
@@ -77,7 +77,7 @@ func _ready():
 	#	_size_slider.max_value = 50
 
 
-func setup_dialogs(base_control: Node):
+func setup_dialogs(base_control: Node) -> void:
 	assert(_brush_settings_dialog == null)
 	_brush_settings_dialog = HT_BrushSettingsDialogScene.instantiate()
 	base_control.add_child(_brush_settings_dialog)
@@ -87,7 +87,7 @@ func setup_dialogs(base_control: Node):
 	_brush_settings_dialog.set_brush(_terrain_painter.get_brush())
 
 
-func _exit_tree():
+func _exit_tree() -> void:
 	if _brush_settings_dialog != null:
 		_brush_settings_dialog.queue_free()
 		_brush_settings_dialog = null
@@ -102,7 +102,7 @@ func _exit_tree():
 #			if mode >= Brush.MODE_COUNT:
 #				mode = 0
 
-func set_terrain_painter(terrain_painter: HT_TerrainPainter):
+func set_terrain_painter(terrain_painter: HT_TerrainPainter) -> void:
 	if _terrain_painter != null:
 		_terrain_painter.flatten_height_changed.disconnect(_on_flatten_height_changed)
 		_terrain_painter.get_brush().shapes_changed.disconnect(_on_brush_shapes_changed)
@@ -147,44 +147,44 @@ func set_terrain_painter(terrain_painter: HT_TerrainPainter):
 		brush.opacity_changed.connect(_on_brush_opacity_changed)
 
 
-func _on_flatten_height_changed():
+func _on_flatten_height_changed() -> void:
 	_flatten_height_box.value = _terrain_painter.get_flatten_height()
 	_flatten_height_pick_button.button_pressed = false
 
 
-func _on_brush_shapes_changed():
+func _on_brush_shapes_changed() -> void:
 	_update_shape_preview()
 
 
-func _on_brush_size_changed(new_size):
+func _on_brush_size_changed(new_size) -> void:
 	_update_brush_size(new_size)
 
 
-func _on_brush_opacity_changed(new_opacity):
+func _on_brush_opacity_changed(new_opacity) -> void:
 	_update_brush_opacity(new_opacity)
 
 
-func _on_brush_shape_index_changed():
+func _on_brush_shape_index_changed() -> void:
 	_update_shape_preview()
 
 
-func _update_shape_preview():
+func _update_shape_preview() -> void:
 	var brush := _terrain_painter.get_brush()
 	var i := brush.get_shape_index()
 	_shape_texture_rect.texture = brush.get_shape(i)
 
 
-func _update_brush_size(new_size):
+func _update_brush_size(new_size) -> void:
 	if _terrain_painter != null:
 		_size_slider.set_value_no_signal(new_size)
 
 
-func _update_brush_opacity(new_opacity):
+func _update_brush_opacity(new_opacity: float) -> void:
 	if _terrain_painter != null:
 		_opacity_slider.set_value_no_signal(new_opacity * _opacity_slider.max_value)
 
 
-func set_display_mode(mode: int):
+func set_display_mode(mode: int) -> void:
 	var show_flatten := mode == HT_TerrainPainter.MODE_FLATTEN
 	var show_color := mode == HT_TerrainPainter.MODE_COLOR
 	var show_density := mode == HT_TerrainPainter.MODE_DETAIL
@@ -214,46 +214,46 @@ func set_display_mode(mode: int):
 	_flatten_height_pick_button.button_pressed = false
 
 
-func _on_size_slider_value_changed(v: float):
+func _on_size_slider_value_changed(v: float) -> void:
 	if _terrain_painter != null:
 		_terrain_painter.set_brush_size(int(v))
 
 
-func _on_opacity_slider_value_changed(v: float):
+func _on_opacity_slider_value_changed(v: float) -> void:
 	if _terrain_painter != null:
 		_terrain_painter.set_opacity(_opacity_slider.ratio)
 
 
-func _on_flatten_height_box_value_changed(v: float):
+func _on_flatten_height_box_value_changed(v: float) -> void:
 	if _terrain_painter != null:
 		_terrain_painter.set_flatten_height(v)
 
 
-func _on_color_picker_color_changed(v: Color):
+func _on_color_picker_color_changed(v: Color) -> void:
 	if _terrain_painter != null:
 		_terrain_painter.set_color(v)
 
 
-func _on_density_slider_changed(v: float):
+func _on_density_slider_changed(v: float) -> void:
 	if _terrain_painter != null:
 		_terrain_painter.set_detail_density(v)
 
 
-func _on_holes_checkbox_toggled(v: bool):
+func _on_holes_checkbox_toggled(v: bool) -> void:
 	if _terrain_painter != null:
 		# When checked, we draw holes. When unchecked, we clear holes
 		_terrain_painter.set_mask_flag(not v)
 
 
-func _on_BrushShapeButton_pressed():
+func _on_BrushShapeButton_pressed() -> void:
 	_brush_settings_dialog.popup_centered()
 
 
-func _on_FlattenHeightPickButton_pressed():
+func _on_FlattenHeightPickButton_pressed() -> void:
 	_terrain_painter.set_meta("pick_height", true)
 
 
-func _on_slope_limit_changed():
+func _on_slope_limit_changed() -> void:
 	var low = deg_to_rad(_slope_limit_control.get_low_value())
 	var high = deg_to_rad(_slope_limit_control.get_high_value())
 	_terrain_painter.set_slope_limit_angles(low, high)

@@ -26,11 +26,11 @@ var _terrain : HTerrain = null
 var _logger = HT_Logger.get_for(self)
 
 
-func _init():
+func _init() -> void:
 	get_ok_button().hide()
 
 
-func _ready():
+func _ready() -> void:
 	_inspector.set_prototype({
 		"heightmap": {
 			"type": TYPE_STRING,
@@ -76,11 +76,11 @@ func _ready():
 #	_warnings_label.text = "- Yolo Jesus!"
 
 
-func set_terrain(terrain: HTerrain):
+func set_terrain(terrain: HTerrain) -> void:
 	_terrain = terrain
 
 
-func _notification(what: int):
+func _notification(what: int) -> void:
 	if what == NOTIFICATION_VISIBILITY_CHANGED:
 		# Checking a node set in _ready,
 		# because visibility can also change between _enter_tree and _ready...
@@ -95,7 +95,7 @@ static func _format_feedbacks(feed):
 	return "\n".join(PackedStringArray(a))
 
 
-func _clear_feedback():
+func _clear_feedback() -> void:
 	_errors_label.text = ""
 	_warnings_label.text = ""
 
@@ -105,7 +105,7 @@ class HT_ErrorCheckReport:
 	var warnings := []
 
 
-func _show_feedback(res: HT_ErrorCheckReport):
+func _show_feedback(res: HT_ErrorCheckReport) -> void:
 	for e in res.errors:
 		_logger.error(e)
 
@@ -121,12 +121,12 @@ func _show_feedback(res: HT_ErrorCheckReport):
 		_warnings_label.text = _format_feedbacks(res.warnings)
 
 
-func _on_CheckButton_pressed():
+func _on_CheckButton_pressed() -> void:
 	var res := _validate_form()
 	_show_feedback(res)
 
 
-func _on_ImportButton_pressed():
+func _on_ImportButton_pressed() -> void:
 	assert(_terrain != null and _terrain.get_data() != null)
 
 	# Verify input to inform the user of potential issues
@@ -170,11 +170,11 @@ func _on_ImportButton_pressed():
 	hide()
 
 
-func _on_CancelButton_pressed():
+func _on_CancelButton_pressed() -> void:
 	hide()
 
 
-func _on_Inspector_property_changed(key: String, value):
+func _on_Inspector_property_changed(key: String, value: Variant) -> void:
 	if key == "heightmap":
 		var is_raw = value.get_extension().to_lower() == "raw"
 		_inspector.set_property_enabled("raw_endianess", is_raw)
@@ -255,8 +255,14 @@ func _validate_form() -> HT_ErrorCheckReport:
 	return res
 
 
-static func _check_map_size(path: String, map_name: String, heightmap_size: int, bit_depth: int, 
-	res: HT_ErrorCheckReport, logger):
+static func _check_map_size(
+	path: String, 
+	map_name: String, 
+	heightmap_size: int, 
+	bit_depth: int, 
+	res: HT_ErrorCheckReport, 
+	logger
+) -> void:
 	
 	var size_result := _load_image_size(path, logger, bit_depth)
 	if size_result.error_code != OK:

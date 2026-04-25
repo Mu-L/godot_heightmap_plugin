@@ -76,7 +76,7 @@ static func generate_image(sources: Dictionary, resolution: int, logger) -> HT_R
 	return HT_Result.new(true).with_value(image)
 
 
-static func _flip_normalmap_y(image: Image):
+static func _flip_normalmap_y(image: Image) -> void:
 	for y in image.get_height():
 		for x in image.get_width():
 			var col := image.get_pixel(x, y)

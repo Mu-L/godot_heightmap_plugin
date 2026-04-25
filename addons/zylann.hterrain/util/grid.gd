@@ -6,7 +6,7 @@
 
 
 # Performs a positive integer division rounded to upper (4/2 = 2, 5/3 = 2)
-static func up_div(a: int, b: int):
+static func up_div(a: int, b: int) -> int:
 	if a % b != 0:
 		return a / b + 1
 	return a / b
@@ -48,7 +48,13 @@ static func clone_grid(other_grid):
 
 # Resizes a 2D array and allows to set or call functions for each deleted and created cells.
 # This is especially useful if cells contain objects and you don't want to loose existing data.
-static func resize_grid(grid, new_width, new_height, create_func=null, delete_func=null):
+static func resize_grid(
+	grid: Array,
+	new_width: int, 
+	new_height: int, 
+	create_func=null, 
+	delete_func=null
+) -> void:
 	# Check parameters
 	assert(new_width >= 0 and new_height >= 0)
 	assert(grid != null)
@@ -171,7 +177,7 @@ static func grid_extract_area_safe_crop(src_grid, x0, y0, w, h):
 
 
 # Sets values from a grid inside another grid. No boundary check!
-static func grid_paste(src_grid, dst_grid, x0, y0):
+static func grid_paste(src_grid: Array, dst_grid: Array, x0: int, y0: int) -> void:
 	for y in range(0, src_grid.size()):
 		var src_row = src_grid[y]
 		var dst_row = dst_grid[y0+y]
@@ -180,7 +186,7 @@ static func grid_paste(src_grid, dst_grid, x0, y0):
 
 
 # Tests if two grids are the same size and contain the same values
-static func grid_equals(a, b):
+static func grid_equals(a: Array, b: Array) -> bool:
 	if a.size() != b.size():
 		return false
 	for y in a.size():

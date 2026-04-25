@@ -42,7 +42,7 @@ var _prev_position := Vector2(-999, -999)
 var _prev_time_ms := 0
 
 
-func set_size(size: int):
+func set_size(size: int) -> void:
 	if size < 1:
 		size = 1
 	if size != _size:
@@ -54,7 +54,7 @@ func get_size() -> int:
 	return _size
 
 
-func set_opacity(opacity: float):
+func set_opacity(opacity: float) -> void:
 	var new_opacity := clampf(opacity, 0.0, 1.0)
 
 	if new_opacity != _opacity:
@@ -66,7 +66,7 @@ func get_opacity() -> float:
 	return _opacity
 
 
-func set_random_rotation_enabled(enabled: bool):
+func set_random_rotation_enabled(enabled: bool) -> void:
 	_random_rotation = enabled
 
 
@@ -82,7 +82,7 @@ func is_pressure_enabled() -> bool:
 	return _pressure_enabled
 
 
-func set_pressure_over_scale(amount: float):
+func set_pressure_over_scale(amount: float) -> void:
 	_pressure_over_scale = clampf(amount, 0.0, 1.0)
 
 
@@ -98,7 +98,7 @@ func get_pressure_over_opacity() -> float:
 	return _pressure_over_opacity
 
 
-func set_frequency_distance(d: float):
+func set_frequency_distance(d: float) -> void:
 	_frequency_distance = maxf(d, 0.0)
 
 
@@ -106,7 +106,7 @@ func get_frequency_distance() -> float:
 	return _frequency_distance
 
 
-func set_frequency_time_ms(t: int):
+func set_frequency_time_ms(t: int) -> void:
 	if t < 0:
 		t = 0
 	_frequency_time_ms = t
@@ -116,7 +116,7 @@ func get_frequency_time_ms() -> int:
 	return _frequency_time_ms
 
 
-func set_shapes(shapes: Array[Texture2D]):
+func set_shapes(shapes: Array[Texture2D]) -> void:
 	assert(len(shapes) >= 1)
 	for s in shapes:
 		assert(s != null)
@@ -139,14 +139,14 @@ func get_shape_index() -> int:
 	return _shape_index
 
 
-func set_shape_index(i: int):
+func set_shape_index(i: int) -> void:
 	assert(i >= 0)
 	assert(i < len(_shapes))
 	_shape_index = i
 	shape_index_changed.emit()
 
 
-func set_shape_cycling_enabled(enable: bool):
+func set_shape_cycling_enabled(enable: bool) -> void:
 	_shape_cycling_enabled = enable
 
 
@@ -219,6 +219,6 @@ func configure_paint_input(painters: Array[HT_Painter], position: Vector2, press
 
 
 # Call this when the user releases the pen or mouse button
-func on_paint_end():
+func on_paint_end() -> void:
 	_prev_position = Vector2(-999, -999)
 	_prev_time_ms = 0

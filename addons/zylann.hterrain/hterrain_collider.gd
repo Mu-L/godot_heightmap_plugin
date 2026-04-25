@@ -10,7 +10,7 @@ var _terrain_data : HTerrainData = null
 var _logger = HT_Logger.get_for(self)
 
 
-func _init(attached_node: Node, initial_layer: int, initial_mask: int):
+func _init(attached_node: Node, initial_layer: int, initial_mask: int) -> void:
 	_logger.debug("HTerrainCollider: creating body")
 	assert(attached_node != null)
 	_shape_rid = PhysicsServer3D.heightmap_shape_create()
@@ -39,11 +39,11 @@ func _init(attached_node: Node, initial_layer: int, initial_mask: int):
 	PhysicsServer3D.body_attach_object_instance_id(_body_rid, attached_node.get_instance_id())
 
 
-func set_collision_layer(layer: int):
+func set_collision_layer(layer: int) -> void:
 	PhysicsServer3D.body_set_collision_layer(_body_rid, layer)
 
 
-func set_collision_mask(mask: int):
+func set_collision_mask(mask: int) -> void:
 	PhysicsServer3D.body_set_collision_mask(_body_rid, mask)
 
 
@@ -68,7 +68,7 @@ func update_physics_material(physics_material: PhysicsMaterial) -> void:
 		ps.body_set_param(_body_rid, PhysicsServer3D.BODY_PARAM_FRICTION, friction)
 
 
-func _notification(what: int):
+func _notification(what: int) -> void:
 	if what == NOTIFICATION_PREDELETE:
 		_logger.debug("Destroy HTerrainCollider")
 		PhysicsServer3D.free_rid(_body_rid)
@@ -76,18 +76,18 @@ func _notification(what: int):
 		PhysicsServer3D.free_rid(_shape_rid)
 
 
-func set_transform(transform: Transform3D):
+func set_transform(transform: Transform3D) -> void:
 	assert(_body_rid != RID())
 	_terrain_transform = transform
 	_update_transform()
 
 
-func set_world(world: World3D):
+func set_world(world: World3D) -> void:
 	assert(_body_rid != RID())
 	PhysicsServer3D.body_set_space(_body_rid, world.get_space() if world != null else RID())
 
 
-func create_from_terrain_data(terrain_data: HTerrainData):
+func create_from_terrain_data(terrain_data: HTerrainData) -> void:
 	assert(terrain_data != null)
 	assert(not terrain_data.is_locked())
 	_logger.debug("HTerrainCollider: setting up heightmap")
@@ -109,11 +109,11 @@ func create_from_terrain_data(terrain_data: HTerrainData):
 	}
 
 	PhysicsServer3D.shape_set_data(_shape_rid, shape_data)
+	
+	_update_transform()
 
-	_update_transform(aabb)
 
-
-func _update_transform(aabb=null):
+func _update_transform() -> void:
 	if _terrain_data == null:
 		_logger.debug("HTerrainCollider: terrain data not set yet")
 		return
