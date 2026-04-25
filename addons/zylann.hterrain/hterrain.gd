@@ -141,7 +141,7 @@ const _DEBUG_AABB = false
 
 signal transform_changed(global_transform)
 
-@export_range(0.0, 1.0) var ambient_wind : float:
+@export_range(0.0, 1.0) var ambient_wind: float:
 	get:
 		return ambient_wind
 	set(amplitude):
@@ -186,8 +186,8 @@ signal transform_changed(global_transform)
 		_on_transform_changed()
 
 
-var _custom_shader : Shader = null
-var _custom_globalmap_shader : Shader = null
+var _custom_shader: Shader = null
+var _custom_globalmap_shader: Shader = null
 var _shader_type := SHADER_CLASSIC4_LITE
 var _shader_uses_texture_array := false
 var _material := ShaderMaterial.new()
@@ -224,7 +224,7 @@ var _collision_enabled := true
 var _collider: HTerrainCollider = null
 var _collision_layer := 1
 var _collision_mask := 1
-var _physics_material : PhysicsMaterial = null
+var _physics_material: PhysicsMaterial = null
 
 # Stats & debug
 var _updated_chunks := 0
@@ -234,7 +234,7 @@ var _logger = HT_Logger.get_for(self)
 var _normals_baker = null
 
 var _lookdev_enabled := false
-var _lookdev_material : ShaderMaterial
+var _lookdev_material: ShaderMaterial
 
 
 func _init() -> void:
@@ -970,7 +970,6 @@ func _on_data_map_changed(type: int, index: int) -> void:
 	or type == HTerrainData.CHANNEL_HEIGHT \
 	or type == HTerrainData.CHANNEL_NORMAL \
 	or type == HTerrainData.CHANNEL_GLOBAL_ALBEDO:
-
 		for layer in _detail_layers:
 			layer.update_material()
 
@@ -1070,7 +1069,7 @@ func _update_material_params() -> void:
 	var terrain_textures := {}
 	var res := Vector2(-1, -1)
 	
-	var lookdev_material : ShaderMaterial
+	var lookdev_material: ShaderMaterial
 	if _lookdev_enabled:
 		lookdev_material = _get_lookdev_material()
 
@@ -1442,7 +1441,7 @@ func set_area_dirty(
 	for lod in _lodder.get_lod_count():
 		# Get grid and chunk size
 		var grid = _chunks[lod]
-		var s : int = _lodder.get_lod_factor(lod)
+		var s: int = _lodder.get_lod_factor(lod)
 
 		# Convert rect into this lod's coordinates:
 		# Pick min and max (included), divide them, then add 1 to max so it's excluded again
@@ -1467,7 +1466,7 @@ func _cb_make_chunk(cpos_x: int, cpos_y: int, lod: int):
 	if chunk == null:
 		# This is the first time this chunk is required at this lod, generate it
 		
-		var lod_factor : int = _lodder.get_lod_factor(lod)
+		var lod_factor: int = _lodder.get_lod_factor(lod)
 		var origin_in_cells_x := cpos_x * _chunk_size * lod_factor
 		var origin_in_cells_y := cpos_y * _chunk_size * lod_factor
 		
@@ -1476,8 +1475,7 @@ func _cb_make_chunk(cpos_x: int, cpos_y: int, lod: int):
 			material = _get_lookdev_material()
 
 		if _DEBUG_AABB:
-			chunk = HTerrainChunkDebug.new(
-				self, origin_in_cells_x, origin_in_cells_y, material)
+			chunk = HTerrainChunkDebug.new(self, origin_in_cells_x, origin_in_cells_y, material)
 		else:
 			chunk = HTerrainChunk.new(self, origin_in_cells_x, origin_in_cells_y, material)
 		chunk.parent_transform_changed(get_internal_transform())
@@ -1503,15 +1501,16 @@ func _cb_recycle_chunk(chunk: HTerrainChunk, cx: int, cy: int, lod: int) -> void
 
 
 func _cb_get_vertical_bounds(cpos_x: int, cpos_y: int, lod: int):
-	var chunk_size : int = _chunk_size * _lodder.get_lod_factor(lod)
+	var chunk_size: int = _chunk_size * _lodder.get_lod_factor(lod)
 	var origin_in_cells_x := cpos_x * chunk_size
 	var origin_in_cells_y := cpos_y * chunk_size
 	# This is a hack for speed,
 	# because the proper algorithm appears to be too slow for GDScript.
 	# It should be good enough for most common cases, unless you have super-sharp cliffs.
 	return _data.get_point_aabb(
-		origin_in_cells_x + chunk_size / 2, 
-		origin_in_cells_y + chunk_size / 2)
+		origin_in_cells_x + chunk_size / 2,
+		origin_in_cells_y + chunk_size / 2
+	)
 #	var aabb = _data.get_region_aabb(
 #		origin_in_cells_x, origin_in_cells_y, chunk_size, chunk_size)
 #	return Vector2(aabb.position.y, aabb.end.y)
@@ -1722,7 +1721,7 @@ class HT_PendingChunkUpdate:
 
 
 class HT_EnterWorldAction:
-	var world : World3D = null
+	var world: World3D = null
 	func _init(w) -> void:
 		world = w
 	func exec(chunk) -> void:
@@ -1735,7 +1734,7 @@ class HT_ExitWorldAction:
 
 
 class HT_TransformChangedAction:
-	var transform : Transform3D
+	var transform: Transform3D
 	func _init(t: Transform3D) -> void:
 		transform = t
 	func exec(chunk) -> void:
@@ -1756,7 +1755,7 @@ class HT_VisibilityChangedAction:
 
 
 class HT_SetMaterialAction:
-	var material : Material = null
+	var material: Material = null
 	func _init(m: Material) -> void:
 		material = m
 	func exec(chunk) -> void:

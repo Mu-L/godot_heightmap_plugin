@@ -331,4 +331,3 @@ func _report_progress(passes: Array, pass_index: int, iteration: int) -> void:
 		"iteration": iteration,
 		"iteration_count": p.iterations
 	})
-

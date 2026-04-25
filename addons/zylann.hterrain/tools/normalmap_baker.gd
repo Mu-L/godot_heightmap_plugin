@@ -144,5 +144,3 @@ func _process(_unused_delta: float) -> void:
 
 func _has_pending_tiles() -> bool:
 	return len(_pending_tiles_queue) > 0
-
-

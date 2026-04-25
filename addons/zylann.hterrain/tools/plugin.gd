@@ -912,7 +912,6 @@ func _show_brush_editor_overlay(
 
 	_overlay_selector = selector
 
-
 	selector.on_value_selected.connect(func f(value):
 		on_value_selected.call(value)
 		_remove_overlay_selector()
@@ -930,8 +929,10 @@ func _remove_overlay_selector() -> void:
 
 func _get_editor_viewport_container() -> SubViewportContainer:
 	# Returns the Node3DEditorViewportContainer
-	var viewport_container: Control = EditorInterface.get_editor_viewport_3d().get_parent().get_parent()
-	var editor_viewport_container: Array[Node] = viewport_container.find_children("*","SubViewportContainer", false,false)
+	var viewport_container: Control = \
+		EditorInterface.get_editor_viewport_3d().get_parent().get_parent()
+	var editor_viewport_container: Array[Node] = \
+		viewport_container.find_children("*", "SubViewportContainer", false, false)
 
 	if editor_viewport_container.is_empty():
 		return null
